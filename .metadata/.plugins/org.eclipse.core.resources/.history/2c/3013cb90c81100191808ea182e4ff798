@@ -1,0 +1,33 @@
+import java.util.ArrayList;
+
+public class Task {
+
+	private int id;
+	private Account author;
+	private double wage;
+	private String estimatedTime;
+	private ArrayList <String> skillsRequired;
+	private String location;
+	private String description;
+	private TaskStatus status;
+	
+	//account author, string?
+	Task(int id, Account author, double wage, String estimatedTime, String skillsRequired, String location, String description){
+		
+		this.id=id;
+		this.author=author;
+		this.wage=wage;
+		this.estimatedTime=estimatedTime;
+		this.skillsRequired.add(skillsRequired); ///GOTTA FIX THIS string to string list thing
+		this.location=location;
+		this.description=description;
+		
+	}
+	
+	
+	public static void main(String[] args) {
+		
+		
+	}
+
+}
