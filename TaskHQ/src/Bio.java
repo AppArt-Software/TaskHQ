@@ -17,7 +17,6 @@ public class Bio {
 	return this.id;
 	}
 	
-	
 	ArrayList<String> getSkills(){
 		return this.skills;
 	}
@@ -25,28 +24,19 @@ public class Bio {
 	void addSkill(String skill){
 		this.skills.add(skill);
 	}
-	
-	
+
 	
 	 int getCompletedJobs() {
 		return completedJobs;
 	}
 
-
-
-
 	 void setCompletedJobs(int completedJobs) {
 		this.completedJobs = completedJobs;
 	}
 
-
-
-
 	 int getHoursWorked() {
 		return hoursWorked;
 	}
-
-
 
 
 	 void setHoursWorked(int hoursWorked) {
@@ -54,20 +44,13 @@ public class Bio {
 	}
 
 
-
-
 	 String getDescription() {
 		return description;
 	}
 
-
-
-
 	 void setDescription(String description) {
 		this.description = description;
 	}
-
-
 
 
 	 String getPhoneNumber() {
@@ -75,18 +58,11 @@ public class Bio {
 	}
 
 
-
-
 	 void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 	 
 	 
-	 
-
-
-
-
 	public static void main(String[] args) {
 		
 

@@ -3,17 +3,15 @@ import java.net.MalformedURLException;
 import java.net.*;
 import java.util.*;
 
-import org.json.*;
-
 //import org.json.JSONParser;
 public class Account {
 
-	private int id;
-	private String username; //email?
-	private String firstName;
-	private String lastName;
-	private String password;
-	private int age;
+	private static int id;
+	private static String username; //email?
+	private static String firstName;
+	private static String lastName;
+	private static String password;
+	private static int age;
 	
 	private Bio bio;
 	private Review reviews;
@@ -75,14 +73,7 @@ public class Account {
 	}
 	
 	
-	static void createAccount(Account newAccount){
-		
-		String newUsername =newAccount.getUsername(); 
-		String newFirstName =newAccount.getFirstName();
-		String newLastName=newAccount.getLastName();
-		String newPassword=newAccount.getPassword();
-		String newAge=Integer.toString(newAccount.getId());//change to int later
-		
+	public static void createAccount(){
 		 
 		URL URLcreateAccount;
 		try {
@@ -93,11 +84,11 @@ public class Account {
 			OutputStream outputStream = httpUrlConnection.getOutputStream();
 			
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-			   String data_string = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(newUsername, "UTF-8") + "&" +
-			           URLEncoder.encode("firstName", "UTF-8") + "=" + URLEncoder.encode(newFirstName, "UTF-8")+ "&" +
-					   URLEncoder.encode("lastName", "UTF-8") + "=" + URLEncoder.encode(newLastName, "UTF-8")+ "&" +
-					   URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(newPassword, "UTF-8")+ "&" +
-					   URLEncoder.encode("age", "UTF-8") + "=" + URLEncoder.encode(newAge, "UTF-8");
+			   String data_string = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8") + "&" +
+			           URLEncoder.encode("firstName", "UTF-8") + "=" + URLEncoder.encode(firstName, "UTF-8")+ "&" +
+					   URLEncoder.encode("lastName", "UTF-8") + "=" + URLEncoder.encode(lastName, "UTF-8")+ "&" +
+					   URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8")+ "&" +
+					   URLEncoder.encode("age", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(age), "UTF-8");
 
 			   bufferedWriter.write(data_string);
 			   bufferedWriter.flush();
@@ -171,7 +162,7 @@ public class Account {
 public static void main(String[] args) {
 	Account tester = new Account("charr", "akram","hannoufa", "adwa", 7);
 				
-		createAccount(tester);
+		createAccount();
 		System.out.println(getAccount("charr"));;
 		//System.out.println(JSONText);
 	}
