@@ -258,6 +258,10 @@ public class Task {
 			return "0";
 		}
 	}
+	
+	static String parseJSON(String JSONText){
+		return null;
+	}
 	public static void main(String[] args) {
 		
 		

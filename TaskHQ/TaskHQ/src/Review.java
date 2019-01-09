@@ -103,7 +103,7 @@ public class Review {
 		String JSON_STRING;
 		String returnString="";
 		try {
-			   URL url = new URL("http://104.196.62.218/GetReview.php");
+			   URL url = new URL("http://104.196.62.218/GetReviews.php");
 			   HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
 			   httpUrlConnection.setRequestMethod("POST");
 			   httpUrlConnection.setDoOutput(true);
@@ -140,16 +140,29 @@ public class Review {
 		 return returnString;
 
 	}
-	void parseJSON(String JSONText){
-		JSONArray ja = new JSONArray(JSONText);
-		JSONObject reviewDetails = new JSONObject(ja.getJSONObject(0));
-		String author = reviewDetails.getString("author");
+	static String parseJSON(String JSONText, String infoRequired){
+		System.out.println(JSONText);
+		String returnString="";
+		JSONObject reviewDetails = null;
+		JSONObject obj = new JSONObject(JSONText);
+		JSONArray values = obj.getJSONArray("values");	
+		for(int i=0;i<values.length();i++){
+			reviewDetails = values.getJSONObject(i);
+			returnString+="\n"+reviewDetails.getString(infoRequired);
+		}
+		return returnString;
+		//System.out.println(reviewDetails.getString("author"));
 	}
 	
 	public static void main(String[] args) {
-
-		
-		
+		Account tester3 = new Account("trump", "Donald", "Trump", "ivank45", 70);
+		Account tester24 = new Account("yolo", "Mr", "Charles", "dawd", 12);
+		Review testReview = new Review(14,tester3 , tester24, "this guy really sucks tbh", 4);
+		Review testReview2=new Review(12, tester3, tester24, "hahah kms lmao", 3);
+		//testReview2.createReview();
+		//testReview.createReview();
+		//System.out.println(getReview("trump"));
+		System.out.println(parseJSON(getReview("trump"), "rating"));
 	}
 
 }

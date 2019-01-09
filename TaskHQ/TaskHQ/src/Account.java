@@ -220,16 +220,28 @@ public class Account {
 		 return returnString;
 
 	}
-	static void parseJSON(String JSONString){ //change to allow parameter on what value is needed, if statements??
+	static String parseJSON(String JSONString,int accountOrBio, String infoRequired){ //change to allow parameter on what value is needed, if statements??
 		System.out.println(JSONString);
+		String returnString="";
+		JSONObject returnData = null;
 		JSONObject obj = new JSONObject(JSONString);
 		JSONObject values = obj.getJSONObject("values");	
 		JSONArray accountDetailsArray = values.getJSONArray("accountDetails");
 		JSONArray bioDetailsArray = values.getJSONArray("bioDetails");
-		JSONObject bioDetails = bioDetailsArray.getJSONObject(0);
-		JSONObject accountDetails = accountDetailsArray.getJSONObject(0); 
-		System.out.println(bioDetails.getString("completedJobs")); //get completed jobs
-		System.out.println(accountDetails.getString("password"));//gets last name
+		for(int i=0;i<accountDetailsArray.length();i++){
+			if(accountOrBio==0){
+				returnData = accountDetailsArray.getJSONObject(i);
+				returnString += "\n"+returnData.getString(infoRequired);
+			}
+			else if(accountOrBio==1){
+				returnData = bioDetailsArray.getJSONObject(i);
+				returnString+="\n"+returnData.getString(infoRequired);
+			}
+		
+		
+		}
+		return returnString;
+		
 	}
 	
 	
@@ -244,6 +256,6 @@ public static void main(String[] args) {
 		
 	//tester2.createAccount();
 	//System.out.println(getAccount("trump"));	
-	parseJSON(getAccount("trump"));
+	System.out.println(parseJSON(getAccount("trump"),1, "completedJobs"));
 	}
 }
