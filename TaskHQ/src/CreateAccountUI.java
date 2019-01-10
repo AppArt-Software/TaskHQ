@@ -185,7 +185,7 @@ public class CreateAccountUI {
 				
 				if (username.trim().length() != 0 && firstName.trim().length() != 0 &&
 						lastName.trim().length() != 0 && password1.length() != 0 &&
-						password2.length() !=  0 && age.length() != 0) {
+						password2.length() !=  0 && age.trim().length() != 0) {
 						
 					if (username.contains("@")) {
 						if (password1.equals(password2)) {
