@@ -13,11 +13,13 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner;
 
 public class CreateAccountUI {
 
@@ -27,9 +29,9 @@ public class CreateAccountUI {
 	private JTextField txtLastName;
 	private JPasswordField txtPassword1;
 	private JPasswordField txtPassword2;
-	private JFormattedTextField txtAge;
 	private JPanel pUsername, pFirstName, pLastName, pPassword1, pPassword2;
 	private JPanel pAge;
+	private JSpinner sAge;
 
 	/**
 	 * Launch the application.
@@ -61,9 +63,14 @@ public class CreateAccountUI {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 307, 391);
+		frame.setBounds(100, 100, 307, 370);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		
+		sAge = new JSpinner();
+		sAge.setFont(new Font("Comfortaa", Font.BOLD, 15));
+		sAge.setBounds(10, 264, 89, 20);
+		frame.getContentPane().add(sAge);
 		
 		txtUsername = new JTextField();
 		txtUsername.setBackground(Color.WHITE);
@@ -124,7 +131,7 @@ public class CreateAccountUI {
 		btnCreateAccount.setForeground(hex2Rgb("#011A27"));
 		btnCreateAccount.setBackground(hex2Rgb("#F0810F"));
 		btnCreateAccount.setFont(new Font("Comfortaa", Font.BOLD, 15));
-		btnCreateAccount.setBounds(10, 318, 271, 23);	
+		btnCreateAccount.setBounds(109, 263, 172, 23);	
 		frame.getContentPane().add(btnCreateAccount);
 		
 		pUsername = new JPanel();
@@ -157,19 +164,15 @@ public class CreateAccountUI {
 		lblAge.setBounds(10, 241, 140, 20);
 		frame.getContentPane().add(lblAge);
 		
-	try {
-		MaskFormatter formatter = new MaskFormatter("###");
-		txtAge = new JFormattedTextField(formatter);
-		txtAge.setBounds(10, 262, 271, 20);
-		frame.getContentPane().add(txtAge);
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-		
 		pAge = new JPanel();
 		pAge.setBackground(new Color(1, 26, 39));
-		pAge.setBounds(10, 262, 271, 23);
+		pAge.setBounds(10, 264, 89, 23);
 		frame.getContentPane().add(pAge);
+		
+		JLabel lblConfirmation = new JLabel("A confirmation email will be sent to the provided address.");
+		lblConfirmation.setFont(new Font("Comfortaa", Font.PLAIN, 8));
+		lblConfirmation.setBounds(10, 301, 271, 36);
+		frame.getContentPane().add(lblConfirmation);
 		
 		btnCreateAccount.addActionListener(new ActionListener() { 
 			@Override
@@ -181,52 +184,57 @@ public class CreateAccountUI {
 				String lastName = txtLastName.getText().toString();
 				String password1 = new String(txtPassword1.getPassword());
 				String password2 = new String (txtPassword2.getPassword());
-				String age = txtAge.getText().toString();
+				String age = sAge.getValue().toString();
 				
 				if (username.trim().length() != 0 && firstName.trim().length() != 0 &&
 						lastName.trim().length() != 0 && password1.length() != 0 &&
-						password2.length() !=  0 && age.trim().length() != 0) {
+						password2.length() !=  0) {
 						
-					if (username.contains("@")) {
-						if (password1.equals(password2)) {
-							if (password1.length() > 6) {
-								/*
-								 * TODO: CREATE ACCOUNT
-								 */
+					if (Integer.parseInt(age) <= 110 && Integer.parseInt(age) >= 13) {
+						if (username.contains("@")) {
+							if (password1.equals(password2)) {
+								if (password1.length() > 6) {
+									/*
+									 * TODO: CREATE ACCOUNT
+									 */
+								} else {
+									clearText(txtPassword1);
+									clearText(txtPassword2);
+									pPassword1.setBackground(Color.RED);
+									pPassword2.setBackground(Color.RED);
+									frame.repaint();
+									showError("Oops!", "Your password must be greater than 6 characters long!");
+								}				
 							} else {
 								clearText(txtPassword1);
 								clearText(txtPassword2);
 								pPassword1.setBackground(Color.RED);
 								pPassword2.setBackground(Color.RED);
-								showError("Oops!", "Your password must be at least 6 characters!");
-							}				
+								frame.repaint();
+								showError("Oops!", "Your passwords don't match!");
+							}			
 						} else {
-							System.out.println(password1 + " " + password2);
-							clearText(txtPassword1);
-							clearText(txtPassword2);
-							pPassword1.setBackground(Color.RED);
-							pPassword2.setBackground(Color.RED);
-							showError("Oops!", "Your passwords don't match!");
-						}			
+							clearText(txtUsername);
+							pUsername.setBackground(Color.RED);
+							frame.repaint();
+							showError("Oops!", "You must enter a valid email!");
+						}
 					} else {
-						clearText(txtUsername);
-						pUsername.setBackground(Color.RED);
-						showError("Oops!", "You must enter a valid email!");
+						pAge.setBackground(Color.RED);
+						frame.repaint();
+						showError("Oops!","You must be older than 13 to join TaskHQ!");
 					}
-						
-				} else {	
-					pUsername.setBackground(Color.RED);
-					pFirstName.setBackground(Color.RED);
-					pLastName.setBackground(Color.RED);
-					pPassword1.setBackground(Color.RED);
-					pPassword2.setBackground(Color.RED);
-					pAge.setBackground(Color.RED);
-					clearBoxes();
-					showError("Oops!", "You must fill all boxes!");
-					
-					
-				}
-				
+					} else {	
+						pUsername.setBackground(Color.RED);
+						pFirstName.setBackground(Color.RED);
+						pLastName.setBackground(Color.RED);
+						pPassword1.setBackground(Color.RED);
+						pPassword2.setBackground(Color.RED);
+						pAge.setBackground(Color.RED);
+						clearBoxes();
+						frame.repaint();
+						showError("Oops!", "You must fill all boxes!");
+					}	
 			} 
 		});
 		
@@ -267,7 +275,6 @@ public class CreateAccountUI {
 		clearText(txtLastName);
 		clearText(txtPassword1);
 		clearText(txtPassword2);
-		clearText(txtAge);
 	}
 	
 	/*
@@ -276,23 +283,14 @@ public class CreateAccountUI {
 	 * @desc: Resets all the highlights under textFields.
 	 */
 	private void resetHighlights() {
-		String username = txtUsername.getText().toString();
-		String firstName = txtFirstName.getText().toString();
-		String lastName = txtLastName.getText().toString();
-		String age = txtAge.getText().toString();
-
+		
 		pUsername.setBackground(hex2Rgb("#011A27"));
 		pFirstName.setBackground(hex2Rgb("#011A27"));
 		pLastName.setBackground(hex2Rgb("#011A27"));
 		pPassword1.setBackground(hex2Rgb("#011A27"));
 		pPassword2.setBackground(hex2Rgb("#011A27"));
 		pAge.setBackground(hex2Rgb("#011A27"));
-		
-		txtUsername.setText(username);
-		txtFirstName.setText(firstName);
-		txtLastName.setText(lastName);
-		txtAge.setText(age);
-
+		frame.repaint();
 	}
 	
 	/**
