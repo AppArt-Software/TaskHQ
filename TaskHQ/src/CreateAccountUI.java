@@ -2,6 +2,9 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -67,9 +70,12 @@ public class CreateAccountUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		sAge = new JSpinner();
+		SpinnerModel sm = new SpinnerNumberModel(13, 13, 110, 1); //default value,lower bound,upper bound,increment by
+		sAge = new JSpinner(sm);
+		sAge.setEditor(new JSpinner.DefaultEditor(sAge));
 		sAge.setFont(new Font("Comfortaa", Font.BOLD, 15));
 		sAge.setBounds(10, 264, 89, 20);
+		
 		frame.getContentPane().add(sAge);
 		
 		txtUsername = new JTextField();
@@ -189,8 +195,7 @@ public class CreateAccountUI {
 				if (username.trim().length() != 0 && firstName.trim().length() != 0 &&
 						lastName.trim().length() != 0 && password1.length() != 0 &&
 						password2.length() !=  0) {
-						
-					if (Integer.parseInt(age) <= 110 && Integer.parseInt(age) >= 13) {
+					
 						if (username.contains("@")) {
 							if (password1.equals(password2)) {
 								if (password1.length() > 6) {
@@ -219,11 +224,7 @@ public class CreateAccountUI {
 							frame.repaint();
 							showError("Oops!", "You must enter a valid email!");
 						}
-					} else {
-						pAge.setBackground(Color.RED);
-						frame.repaint();
-						showError("Oops!","You must be older than 13 to join TaskHQ!");
-					}
+				
 					} else {	
 						pUsername.setBackground(Color.RED);
 						pFirstName.setBackground(Color.RED);
