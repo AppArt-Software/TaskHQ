@@ -1,25 +1,23 @@
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JTextField;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
+import javax.swing.text.MaskFormatter;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JPanel;
+import javax.swing.JFormattedTextField;
 
 public class CreateAccountUI {
 
@@ -29,7 +27,9 @@ public class CreateAccountUI {
 	private JTextField txtLastName;
 	private JPasswordField txtPassword1;
 	private JPasswordField txtPassword2;
+	private JFormattedTextField txtAge;
 	private JPanel pUsername, pFirstName, pLastName, pPassword1, pPassword2;
+	private JPanel pAge;
 
 	/**
 	 * Launch the application.
@@ -61,7 +61,7 @@ public class CreateAccountUI {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 307, 313);
+		frame.setBounds(100, 100, 307, 391);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -124,7 +124,7 @@ public class CreateAccountUI {
 		btnCreateAccount.setForeground(hex2Rgb("#011A27"));
 		btnCreateAccount.setBackground(hex2Rgb("#F0810F"));
 		btnCreateAccount.setFont(new Font("Comfortaa", Font.BOLD, 15));
-		btnCreateAccount.setBounds(10, 241, 271, 23);	
+		btnCreateAccount.setBounds(10, 318, 271, 23);	
 		frame.getContentPane().add(btnCreateAccount);
 		
 		pUsername = new JPanel();
@@ -152,6 +152,25 @@ public class CreateAccountUI {
 		pPassword2.setBounds(10, 210, 271, 23);
 		frame.getContentPane().add(pPassword2);
 		
+		JLabel lblAge = new JLabel("Age (Years)");
+		lblAge.setFont(new Font("Comfortaa", Font.PLAIN, 15));
+		lblAge.setBounds(10, 241, 140, 20);
+		frame.getContentPane().add(lblAge);
+		
+	try {
+		MaskFormatter formatter = new MaskFormatter("###");
+		txtAge = new JFormattedTextField(formatter);
+		txtAge.setBounds(10, 262, 271, 20);
+		frame.getContentPane().add(txtAge);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+		
+		pAge = new JPanel();
+		pAge.setBackground(new Color(1, 26, 39));
+		pAge.setBounds(10, 262, 271, 23);
+		frame.getContentPane().add(pAge);
+		
 		btnCreateAccount.addActionListener(new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -162,11 +181,12 @@ public class CreateAccountUI {
 				String lastName = txtLastName.getText().toString();
 				String password1 = new String(txtPassword1.getPassword());
 				String password2 = new String (txtPassword2.getPassword());
+				String age = txtAge.getText().toString();
 				
 				if (username.trim().length() != 0 && firstName.trim().length() != 0 &&
 						lastName.trim().length() != 0 && password1.length() != 0 &&
-						password2.length() !=  0) {
-					
+						password2.length() !=  0 && age.length() != 0) {
+						
 					if (username.contains("@")) {
 						if (password1.equals(password2)) {
 							if (password1.length() > 6) {
@@ -200,6 +220,7 @@ public class CreateAccountUI {
 					pLastName.setBackground(Color.RED);
 					pPassword1.setBackground(Color.RED);
 					pPassword2.setBackground(Color.RED);
+					pAge.setBackground(Color.RED);
 					clearBoxes();
 					showError("Oops!", "You must fill all boxes!");
 					
@@ -246,6 +267,7 @@ public class CreateAccountUI {
 		clearText(txtLastName);
 		clearText(txtPassword1);
 		clearText(txtPassword2);
+		clearText(txtAge);
 	}
 	
 	/*
@@ -257,16 +279,19 @@ public class CreateAccountUI {
 		String username = txtUsername.getText().toString();
 		String firstName = txtFirstName.getText().toString();
 		String lastName = txtLastName.getText().toString();
+		String age = txtAge.getText().toString();
 
 		pUsername.setBackground(hex2Rgb("#011A27"));
 		pFirstName.setBackground(hex2Rgb("#011A27"));
 		pLastName.setBackground(hex2Rgb("#011A27"));
 		pPassword1.setBackground(hex2Rgb("#011A27"));
 		pPassword2.setBackground(hex2Rgb("#011A27"));
+		pAge.setBackground(hex2Rgb("#011A27"));
 		
 		txtUsername.setText(username);
 		txtFirstName.setText(firstName);
 		txtLastName.setText(lastName);
+		txtAge.setText(age);
 
 	}
 	
