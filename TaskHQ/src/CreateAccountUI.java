@@ -199,9 +199,18 @@ public class CreateAccountUI {
 						if (username.contains("@")) {
 							if (password1.equals(password2)) {
 								if (password1.length() > 6) {
-									/*
-									 * TODO: CREATE ACCOUNT
-									 */
+									Account newAccount = new Account(username, firstName, lastName, password2, Integer.parseInt(age));
+									newAccount.createAccount();
+									//will be tasklist display screen
+									frame.dispose();
+									JFrame taskList = new JFrame ("Avaialbe Tasks");
+									JPanel taskPanel = new JPanel();
+									JLabel taskText = new JLabel("yeehaw");
+									taskPanel.add(taskText);
+									taskList.add(taskPanel);
+									taskList.setBounds(100, 100, 307, 370);
+									taskList.setVisible(true);
+									
 								} else {
 									clearText(txtPassword1);
 									clearText(txtPassword2);
