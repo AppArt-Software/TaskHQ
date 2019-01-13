@@ -11,8 +11,8 @@ public class MainClass {
 		System.out.println("Please Enter Shift");
 		int shift = inKey.nextInt();
 		
-		CeasarCipher cc = new CeasarCipher(s, shift);
-		System.out.println(cc.encrypt());
+		CeasarCipher cc = new CeasarCipher(s);
+		System.out.println(cc.getOutput());
 		
 	}
 

@@ -4,21 +4,22 @@ public class CeasarCipher {
 	private String alpha, input, output;
 	private char[] arr, inArr;
 	
-	public CeasarCipher(String input, int shift) {
-		this.alpha = "abcdefghijklmnopqrstuvwxyz";
+	public CeasarCipher(String input) {
+		this.alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		this.input = input;
-		this.arr = new char[26];
+		this.arr = new char[alpha.length()];
 		this.arr = alpha.toCharArray();
-		this.shift = shift;
+		this.shift = 36;
 		this.inArr = new char[input.length()];
 		this.inArr = input.toCharArray();
+		this.output = this.encrypt();
 	}
 	public CeasarCipher() {
-		this.alpha = "abcdefghijklmnopqrstuvwxyz";
+		this.alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		this.input = "";
-		this.arr = new char[26];
+		this.arr = new char[alpha.length()];
 		this.arr = alpha.toCharArray();
-		this.shift = 0;
+		this.shift = 36;
 		this.inArr = new char[input.length()];
 		this.inArr = input.toCharArray();
 	}
@@ -28,28 +29,27 @@ public class CeasarCipher {
 		for(int i = 0;i < inArr.length;i++) {
 			for(int j = 0;j < arr.length;j++) {
 				if(inArr[i] == arr[j]) {
-					if(j + shift > 25) {
-						int difference = 25 - (j + shift);
-						int remainder = (j + shift) - 26;
+					if(j + shift > alpha.length()-1) {
+						int remainder = (j + shift) - alpha.length();
 						int tillEnd = shift - remainder;
-						if(remainder <= 25) { 
+						if(remainder <= alpha.length()-1) { 
 					
 							inArr[i] = arr[j + tillEnd-1];
 							j = 0;
 							inArr[i] = arr[j + remainder];
-							j = 25;
+							j = arr.length-1;
 						}
-						else if(remainder > 25) {
+						else if(remainder > arr.length-1) {
 							inArr[i] = arr[j + tillEnd-1];
 							j = 0;
-							remainder = remainder%26;
+							remainder = remainder % alpha.length();
 							inArr[i] = arr[j + remainder];
-							j = 25;
+							j = arr.length-1;
 						}
 					}	
-					else if(j + shift <= 25) {
+					else if(j + shift <= arr.length-1) {
 						inArr[i] = arr[j + shift];
-						j = 25;
+						j = arr.length-1;
 						}			
 					}
 			}
