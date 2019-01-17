@@ -1,3 +1,4 @@
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -49,8 +50,6 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
-import net.miginfocom.swing.MigLayout;
-
 import java.awt.CardLayout;
 import java.io.File;
 import java.io.IOException;
@@ -70,8 +69,8 @@ public class MainUI {
 	private JTextField txtAddress;
 	private JTextArea txtDescription;
 	private JFormattedTextField txtStartDate, txtTaskStartTime, txtEndDate, txtEndTime;
-	private JPanel pStartDate, pStartTime, pEndTime, pEndDate, pAddress, panel;
-	private JTextField txtSkill;
+	private JPanel pStartDate, pStartTime, pEndTime, pEndDate, pAddress, panel, pTitle;
+	private JTextField txtSkill, txtTitle;
 	private JTabbedPane tabbedPane;
 
 	/**
@@ -561,7 +560,7 @@ public class MainUI {
 	
 	public JPanel postshiftpanel() throws ParseException{
 		JPanel p = new JPanel();
-		p.setBackground(hex2Rgb("#F0810F"));	
+		p.setBackground(hex2Rgb("#F0810F"));		
 		p.setPreferredSize(new Dimension(550, 400));
 		p.setLayout(null);
 		
@@ -569,6 +568,51 @@ public class MainUI {
 		tabbedPane.setFont(new Font("Comfortaa", Font.BOLD, 15));
 		tabbedPane.setBounds(11, 11, 531, 298);
 		p.add(tabbedPane);
+		
+		JPanel pDescription = new JPanel();
+		tabbedPane.addTab("Description", null, pDescription, null);
+		pDescription.setLayout(null);
+		
+		txtDescription = new JTextArea();
+		pDescription.add(txtDescription);
+		txtDescription.setBounds(10, 82, 506, 141);
+		
+		JLabel lblTaskDescription = new JLabel("Description *");
+		lblTaskDescription.setFont(new Font("Comfortaa", Font.PLAIN, 15));
+		lblTaskDescription.setBounds(10, 57, 131, 14);
+		pDescription.add(lblTaskDescription);
+		
+		panel = new JPanel();
+		panel.setBounds(10, 101, 506, 130);
+		pDescription.add(panel);
+		panel.setBackground(Color.BLACK);
+		
+		txtTitle = new JTextField();
+		txtTitle.setFont(new Font("Comfortaa", Font.PLAIN, 11));
+		txtTitle.setColumns(10);
+		txtTitle.setBackground(Color.WHITE);
+		txtTitle.setBounds(10, 26, 271, 20);
+		pDescription.add(txtTitle);
+		
+		pTitle = new JPanel();
+		pTitle.setBackground(new Color(1, 26, 39));
+		pTitle.setBounds(10, 26, 271, 23);
+		pDescription.add(pTitle);
+		
+		JLabel lblTitle = new JLabel("Title *");
+		lblTitle.setFont(new Font("Comfortaa", Font.PLAIN, 15));
+		lblTitle.setBounds(11, 11, 108, 14);
+		pDescription.add(lblTitle);
+		
+		JButton btnNext4 = new JButton("Next");
+		btnNext4.setFont(new Font("Comfortaa", Font.BOLD, 11));
+		btnNext4.setBounds(427, 234, 89, 23);
+		btnNext4.addActionListener(new java.awt.event.ActionListener(){
+		     public void actionPerformed(ActionEvent e){  
+		         tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex()+1);
+		     }    
+		 });
+		pDescription.add(btnNext4);
 		
 		JPanel pTaskTime = new JPanel();
 		tabbedPane.addTab("Task Time", null, pTaskTime, null);
@@ -806,34 +850,6 @@ public class MainUI {
 			scrollPane.setViewportView(lSkills);
 			pSkills.add(scrollPane);
 			
-			JButton btnNext4 = new JButton("Next");
-			btnNext4.setFont(new Font("Comfortaa", Font.BOLD, 11));
-			btnNext4.setBounds(427, 232, 89, 23);
-			btnNext4.addActionListener(new java.awt.event.ActionListener(){
-			     public void actionPerformed(ActionEvent e){  
-			         tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex()+1);
-			     }    
-			 });
-			pSkills.add(btnNext4);
-			
-			JPanel pDescription = new JPanel();
-			tabbedPane.addTab("Description", null, pDescription, null);
-			pDescription.setLayout(null);
-			
-			txtDescription = new JTextArea();
-			pDescription.add(txtDescription);
-			txtDescription.setBounds(10, 36, 506, 219);
-			
-			JLabel lblTaskDescription = new JLabel("Description *");
-			lblTaskDescription.setFont(new Font("Comfortaa", Font.BOLD, 15));
-			lblTaskDescription.setBounds(10, 11, 131, 14);
-			pDescription.add(lblTaskDescription);
-			
-			panel = new JPanel();
-			panel.setBounds(10, 36, 506, 225);
-			pDescription.add(panel);
-			panel.setBackground(Color.BLACK);
-			
 			JLabel lblManditory = new JLabel("* = Required Field");
 			lblManditory.setHorizontalAlignment(SwingConstants.CENTER);
 			lblManditory.setFont(new Font("Comfortaa", Font.BOLD, 13));
@@ -855,6 +871,7 @@ public class MainUI {
 			    	 String endDate = txtEndDate.getText().toString();
 			    	 String endTime = txtEndTime.getText().toString();
 			    	 String address = txtAddress.getText().toString();
+			    	 String title = txtTitle.getText().toString();
 			    	 boolean payed = rdPayed.isSelected();
 			    	 boolean volunteer = rdVolunteer.isSelected();
 			    	 String pay = spPay.getValue().toString();
@@ -868,7 +885,8 @@ public class MainUI {
 			    	 }
 			
 			    	 if (startDate.length() != 0 && startTime.length() != 0 && endDate.length() != 0 &&
-			    			 endTime.length() != 0 && address.length() != 0 && description.length() != 0) {
+			    			 endTime.length() != 0 && address.length() != 0 && description.length() != 0 &&
+			    			 title.length() != 0) {
 			    		 if (description.length() < 100) {
 			    			 if (countLines(description) < 5) {
 			    				 /*
@@ -892,6 +910,7 @@ public class MainUI {
 			     		 pEndTime.setBackground(Color.RED);
 			    		 pAddress.setBackground(Color.RED);
 			     		 panel.setBackground(Color.RED);
+			     		 pTitle.setBackground(Color.RED);
 			     		 frame.repaint();
 			    	 }
 			    	 
@@ -1169,7 +1188,6 @@ public class MainUI {
 				}
 			}//end for
 		}//end columnsArray
-
 	 
 	public JPanel yourshiftpanel(){
 		JPanel panel = new JPanel();
@@ -1219,13 +1237,3 @@ public class MainUI {
 		 return panel;
 	}
  */
-
-
-
-
-
-
-
-
-
-
