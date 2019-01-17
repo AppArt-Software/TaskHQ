@@ -15,24 +15,30 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Task {
-
+	private String title; //add stuff 
 	private static int id;
 	private Account author;
-	private double wage;
-	private String estimatedTime;
-	private ArrayList <String> skillsRequired= new ArrayList<>();
+	private double wage;//if pay ==0, volunteer
+	
+	private String startTime;
+	private String startDate;
+	private String endDate;
+	private String endTime;
 	private String location;
 	private String description;
 	private TaskStatus status;
+	private String appOrPerson;
 	
-	//account author, string?
-	Task(int id, Account author, double wage, String estimatedTime, String skillsRequired, String location, String description){
+	Task(String title, Account author, double wage, String startDate, String endDate, String startTime, String endTime, String location, String description, String appOrPerson){
 		
-		this.id=id;
+		
+		this.title=title;
 		this.author=author;
 		this.wage=wage;
-		this.estimatedTime=estimatedTime;
-		this.skillsRequired.add(skillsRequired); 
+		this.startTime=startTime;
+		this.endTime=endTime;
+		this.startDate=startDate;
+		this.endDate=endDate;
 		this.location=location;
 		this.description=description;
 		
@@ -48,12 +54,23 @@ public class Task {
 	double getWage(){
 		return this.wage;
 	}
-	String getEstimatedTime(){
-		return this.estimatedTime;
+String getStartDate(){
+	return this.startDate;
+}
+String getEndDate(){
+	return this.endDate;
+}
+	
+	String getStartTime(){
+		return this.startTime;
 	}
-	ArrayList<String> getSkillsRequired(){
-		return this.skillsRequired;
+	String getEndTime(){
+		return this.endTime;
 	}
+	String getTitle(){
+		return this.title;
+	}
+
 	
 	String getLocation(){
 		return this.getLocation();
@@ -64,23 +81,40 @@ public class Task {
 	TaskStatus getTaskStatus(){
 		return this.status;
 	}
+	String getAppOrPerson(){
+		return this.appOrPerson;
+	}
 	
 	//setters
 	
 	void setWage(double wage){
 		this.wage=wage;
 	}
-	void setEstimatedTime(String estimatedTime){
-		this.estimatedTime=estimatedTime;
+
+	void setStartTime(String startTime){
+		this.startTime=startTime;
 	}
-	void setSkillsRequired(ArrayList<String> skillRequired){
-		this.skillsRequired=skillRequired;
+	void setEndTime(String endTime){
+		this.endTime=endTime;
 	}
+
 	void setLocation(String location){
 		this.location=location;
 	}
 	void setDescription(String desc){
 		this.description=desc;
+	}
+	void setTitle(String title){
+		this.title=title;
+	}
+	void setStartDate(String startDate){
+		this.startDate=startDate;
+	}
+	void setEndDate(String endDate){
+		this.endDate=endDate;
+	}
+	void setAppOrPerson(String appOrPerson){
+		this.appOrPerson=appOrPerson;
 	}
 	
 	
@@ -89,12 +123,15 @@ public class Task {
 		
 		String newAuthor = author.getUsername();;
 		String newWage = Double.toString(wage);
-		String newEstimatedTime = estimatedTime;
-		String newSkillsRequired = skillsRequired.toString();
+		String newStartTime=startTime;
+		String newEndTime = endTime;
+		String newStartDate =startDate;
+		String newEndDate= endDate;
 		String newLocation = location;
 		String newDescription = description;
+		String newTitle = title;
+		String newAppOrPerson = appOrPerson;
 		
-		 
 		URL URLcreateAccount;
 		try {
 			URLcreateAccount = new URL("http://104.196.62.218/CreateTask.php");
@@ -106,10 +143,14 @@ public class Task {
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 			   String data_string = URLEncoder.encode("author", "UTF-8") + "=" + URLEncoder.encode(newAuthor, "UTF-8") + "&" +
 			           URLEncoder.encode("pay", "UTF-8") + "=" + URLEncoder.encode(newWage, "UTF-8")+ "&" +
-					   URLEncoder.encode("estimatedTime", "UTF-8") + "=" + URLEncoder.encode(newEstimatedTime, "UTF-8")+ "&" +
-					   URLEncoder.encode("skillsRequired", "UTF-8") + "=" + URLEncoder.encode(newSkillsRequired, "UTF-8")+ "&" +
+					   URLEncoder.encode("appOrPerson", "UTF-8") + "=" + URLEncoder.encode(newAppOrPerson, "UTF-8")+ "&" +
+					   URLEncoder.encode("startTime", "UTF-8") + "=" + URLEncoder.encode(newStartTime, "UTF-8")+ "&" +
 					   URLEncoder.encode("location", "UTF-8") + "=" + URLEncoder.encode(newLocation, "UTF-8")+ "&" +
-					   URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(newDescription, "UTF-8");
+					   URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(newDescription, "UTF-8"+ "&" +
+					   URLEncoder.encode("endTime", "UTF-8") + "=" + URLEncoder.encode(newEndTime, "UTF-8")+ "&" +
+					   URLEncoder.encode("title", "UTF-8") + "=" + URLEncoder.encode(newTitle, "UTF-8")+ "&" +
+					URLEncoder.encode("startDate", "UTF-8") + "=" + URLEncoder.encode(newStartDate, "UTF-8")+ "&" +
+					URLEncoder.encode("endDate", "UTF-8") + "=" + URLEncoder.encode(newEndDate, "UTF-8"));
 
 			   bufferedWriter.write(data_string);
 			   bufferedWriter.flush();
@@ -275,15 +316,12 @@ public class Task {
 		}
 		return returnString;
 	}
+	static String parseJSON(String JSONString){
+		//return all info about all available tasks
+		return null;
+	}
 	public static void main(String[] args) {
-		//	Task(int id, Account author, double wage, String estimatedTime, String skillsRequired, String location, String description){
-		//	Account tester2 = new Account("trump", "Donald", "Trump", "ivank45", 70);
-
-		Account taskAuthor = new Account ("bigboi", "Michael", "Jordan", "bigballer", 45);
-		Task testTask = new Task(14, taskAuthor, 13.00, "2 days", "balling, dribbling", "London, ON", "break some ankles");
-		//testTask.createTask();
-		//System.out.println(getTasks());
-		//System.out.println(parseJSON(getTaskDetails(1), "pay"));
+		
 	}
 
 }

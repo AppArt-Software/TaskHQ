@@ -3,9 +3,9 @@ import java.util.ArrayList;
 public class Bio {
 
 	private int id;
-	private ArrayList <String> skills =new ArrayList<>();
-	private int completedJobs;
-	private int hoursWorked;
+	private String skills ="";
+	private int completedJobs=0;
+	private int hoursWorked=0;
 	private String description="";
 	private String phoneNumber="";
 	
@@ -19,12 +19,12 @@ public class Bio {
 	}
 	
 	
-	ArrayList<String> getSkills(){
+	String getSkills(){
 		return this.skills;
 	}
 	
-	void addSkill(String skill){
-		this.skills.add(skill);
+	void setSkills(String skills){
+		this.skills=skills;
 	}
 	
 	
