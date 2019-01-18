@@ -1,3 +1,4 @@
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -16,7 +17,7 @@ import javax.swing.JPasswordField;
 public class LoginUI {
 
 	private JFrame frame;
-	private JTextField txtEmail;
+	private static JTextField txtEmail;
 	private JPasswordField txtPassword;
 	private JPanel pPassword, pEmail;
 
@@ -29,6 +30,7 @@ public class LoginUI {
 				try {
 					LoginUI window = new LoginUI();
 					window.frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -102,9 +104,20 @@ public class LoginUI {
 				
 				if (username.length() != 0 && password.length() != 0) {
 					if (username.contains("@")) {
-						/*
-						 * TODO check if account is on database / is password correct
-						 */
+						//to do check user info
+						if(Account.parseJSON(Account.getAccount(username), 0, "password").trim().equals(password.trim())){
+							
+							MainUI viewMain = new MainUI();
+							viewMain.main(null);
+							
+						}
+						else{
+							showError("Oops!","Incorrect email or password enetered, please try again!");
+							pPassword.setBackground(Color.RED);
+							txtPassword.setText("");
+							frame.repaint();
+						}
+						
 					} else {
 						showError("Oops!","Invalid email! (Does not contain '@')");
 						pEmail.setBackground(Color.RED);
@@ -136,5 +149,8 @@ public class LoginUI {
 		    message,
 		    title,
 		    JOptionPane.ERROR_MESSAGE);
+	}
+	static String getUsername(){
+		return txtEmail.getText();
 	}
 }

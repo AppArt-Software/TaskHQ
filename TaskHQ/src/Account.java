@@ -8,14 +8,14 @@ import org.json.*;
 //import org.json.JSONParser;
 public class Account {
 
-	private int id;
-	private String username; //email?
-	private String firstName;
-	private String lastName;
-	private String password;
-	private int age;
+	private static int id;
+	static private String username; //email?
+	static private String firstName;
+	static private String lastName;
+	static private String password;
+	static private int age;
 	
-	private Bio bio;
+	private static Bio bio;
 	private Review reviews;
 	
 	//Constructor
@@ -123,7 +123,7 @@ public class Account {
 		 
 
 }
-	 void updateAccount(){ //how to make username constant?
+	 static void updateAccount(){ //how to make username constant?
 		String newUsername =username; 
 		String newFirstName =firstName;
 		String newLastName=lastName;
@@ -231,11 +231,11 @@ public class Account {
 		for(int i=0;i<accountDetailsArray.length();i++){
 			if(accountOrBio==0){
 				returnData = accountDetailsArray.getJSONObject(i);
-				returnString += "\n"+returnData.getString(infoRequired);
+				returnString += returnData.getString(infoRequired)+"\t";
 			}
 			else if(accountOrBio==1){
 				returnData = bioDetailsArray.getJSONObject(i);
-				returnString+="\n"+returnData.getString(infoRequired);
+				returnString+=returnData.getString(infoRequired)+"\t";
 			}
 		
 		
@@ -246,6 +246,8 @@ public class Account {
 	
 	
 public static void main(String[] args) {
+	//encrypt
+	System.out.println(Account.getAccount("hannakra736@gotvdsb.ca"));
 	
-	}
+}
 }

@@ -1,5 +1,6 @@
  import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -13,6 +14,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,6 +67,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.Frame;
 
+//add glebs ui and get task id to confirm picked up
 
 public class MainUI {
 //fill in changes from word doc
@@ -116,7 +119,7 @@ public class MainUI {
 		frame.getContentPane().setForeground(Color.WHITE);
 		frame.getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, new Color(255,140,0)));
 		
-			panel_3.add(yourshiftpanel());
+			
 		
 		
 		//new Color(255,140,0)
@@ -165,13 +168,13 @@ public class MainUI {
 		panel.add(logopanel());
 		panel_1.add(accountpanel());
 		panel_2.add(selectionpanel());
-		panel_3.add(new JPanel());
+		panel_3.add(pickshiftpanel());
 	}
 	
 	
-	public JPanel selectionpanel (){		
+
+public JPanel selectionpanel (){		
 		JPanel panel= new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setLayout(new BorderLayout(0, 0));
         
 		final JButton post= new JButton(" Post Task ");
@@ -182,20 +185,25 @@ public class MainUI {
 		post.setBorder(new LineBorder(Color.black, 8, true));
 		shift.setBorder(new LineBorder(Color.black, 8, true));
 		shift.setOpaque(true);
-		shift.setBackground(new Color(255,140,0));
 		post.setOpaque(true);
-		post.setBackground(new Color(255,140,0)); 
+		shift.setBackground(hex2Rgb("#F0810F")); 
+		post.setBackground(hex2Rgb("#F0810F"));
 		post.setPreferredSize(new Dimension(200, 200));
 		shift.setPreferredSize(new Dimension(200, 200));
-		
-		panel.add(shift, BorderLayout.NORTH);
+		final JPanel spanel= new JPanel();
+		final JPanel ppanel= new JPanel();
+		spanel.add(shift);
+		ppanel.add(post);
+		panel.add(spanel, BorderLayout.NORTH);	
 		panel.add(Box.createRigidArea(new Dimension(0,30)));
-		panel.add(post, BorderLayout.SOUTH);
-	
+		panel.add(ppanel, BorderLayout.SOUTH);
+		spanel.setBackground(Color.black);
 		
 		shift.addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) { 
 			panel_3.removeAll();
-			panel_3.add(yourshiftpanel());
+			panel_3.add(pickshiftpanel());
+			spanel.setBackground(Color.black);
+			ppanel.setBackground(Color.white);
 			frame.validate();
 			frame.repaint();
 		 }});
@@ -208,6 +216,8 @@ public class MainUI {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			ppanel.setBackground(Color.black);
+			spanel.setBackground(Color.white);
 			frame.validate();
 			frame.repaint();
 		 }});
@@ -217,17 +227,11 @@ public class MainUI {
 		    @Override
 		    public void mousePressed(MouseEvent e) {
 		    	post.setBackground(Color.blue);
-		    	try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 		    }
 
 		    @Override
 		    public void mouseReleased(MouseEvent e) {
-		    	post.setBackground(new Color(255,140,0));
+		    	post.setBackground(hex2Rgb("#F0810F"));
 		    }
 
 		});
@@ -237,17 +241,11 @@ public class MainUI {
 		    @Override
 		    public void mousePressed(MouseEvent e) {
 		    	shift.setBackground(Color.blue);
-		    	try {
-					Thread.sleep(100);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 		    }
 
 		    @Override
 		    public void mouseReleased(MouseEvent e) {
-		    	shift.setBackground(new Color(255,140,0));
+		    	shift.setBackground(hex2Rgb("#F0810F"));
 		    }
 
 		});
@@ -255,6 +253,7 @@ public class MainUI {
 		
 		return panel;
 	}
+
 
 	
 	
@@ -996,18 +995,36 @@ public class MainUI {
 	}
 	
 	
-	public JPanel yourshiftpanel(){ //loop with tasks
-		JPanel panel = new JPanel();
+
+
+
+
+
+
+
+
+
+
+	int lengthArrays = Task.numberOfTasks(Task.getTasks());
+
+private JPanel [] bar= new JPanel[lengthArrays];
+	private JLabel task []=new JLabel[lengthArrays];
+	private JLabel pay[]=new JLabel[lengthArrays];
+	private JLabel date[]=new JLabel[lengthArrays];
+	
+	public JPanel pickshiftpanel(){
+		
+		final JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(new LineBorder(Color.black, 6, true));
-		panel.setBackground(new Color(255,140,0));
+		panel.setBackground(hex2Rgb("#F0810F"));
 		
 		JPanel name=new JPanel();
 		name.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		name.setBorder(new LineBorder(Color.black, 3, true));
-		name.setBackground(new Color(255,140,0));
-		JLabel label=new JLabel("       Task");
+		name.setBackground(hex2Rgb("#F0810F"));
+		JLabel label=new JLabel(" Task");
 		JLabel label2=new JLabel("    Pay");
 		JLabel label3=new JLabel("    Date");
 		label.setFont(new Font("Comfortaa", Font.PLAIN, 40));
@@ -1016,35 +1033,43 @@ public class MainUI {
 		name.add(label);
 		name.add(label2);
 		name.add(label3);
-		int lengthArrays = Task.numberOfTasks(Task.getTasks());
-		JLabel task []=new JLabel[lengthArrays];
-		String[] taskText = new String[lengthArrays];
-		String parseStringTitles = Task.parseJSON(Task.getTasks().trim(), "title");
-		taskText=parseStringTitles.split(" ");
 		
-		String[] payText=new String[lengthArrays];
-		String parseStringPay = Task.parseJSON(Task.getTasks(), "pay");
-		payText=parseStringPay.split(" ");
-		
-		String[] dateText=new String[lengthArrays];
-		String parseStringDate = Task.parseJSON(Task.getTasks(), "start");
-		dateText=parseStringDate.split(" ");
-		
-		
-		JLabel pay[]=new JLabel[lengthArrays];
-		JLabel date[]=new JLabel[lengthArrays]; 
+
+	 //use current i value for title to match in database 
 		JButton moreinfo[]=new JButton[lengthArrays];
 		JButton pickup []=new JButton[lengthArrays];
 		
 		JScrollPane sp = new JScrollPane();
 		sp.setPreferredSize((new Dimension(800,400)));
 		
-		JPanel [] bar= new JPanel[lengthArrays];
 		JPanel list= new JPanel();
 		list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
 		
-		for (int i = 0; i < lengthArrays; i++) {
+		final JPopupMenu pop = new JPopupMenu();
+		pop.setBorder(new LineBorder(Color.black, 4, true));
+		pop.add(moreinfopanel());
+		final JPopupMenu pop2 = new JPopupMenu();
+		pop2.setBorder(new LineBorder(Color.black, 4, true));
+		pop2.add(confirmpanel());
+		
+
+		String[] taskText = new String[lengthArrays];
+		String parseStringTitles = Task.parseJSON(Task.getTasks().trim(), "title");
+		taskText=parseStringTitles.split(" ");
+
+		String[] payText=new String[lengthArrays];
+		String parseStringPay = Task.parseJSON(Task.getTasks(), "pay");
+		payText=parseStringPay.split(" ");
+		
+		String[] dateText=new String[lengthArrays*2];
+		String parseStringDate = Task.parseJSON(Task.getTasks(), "start");
+		System.out.println(parseStringDate);
+		dateText=parseStringDate.split(" ");
+		int datecount=0;
+		for (int i=0 ; i < lengthArrays; i++) {
+			
 			bar[i] = new JPanel();
+			
 			task [i]=new JLabel();
 			pay[i]=new JLabel();
 		    date[i]=new JLabel();
@@ -1054,25 +1079,29 @@ public class MainUI {
 		    task [i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		    pay[i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		    date[i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
-		    		
-		    task [i].setText(taskText[i]);
-		    pay[i].setText(payText[i]);
-		    date[i].setText(dateText[i]);
+		    
+		    task[i].setHorizontalAlignment(SwingConstants.LEFT);
+		    task [i].setText(taskText[i].trim());
+		    pay[i].setText(payText[i].trim());
+		    date[i].setText(dateText[datecount].trim());
 		    
 		    moreinfo[i].setText("More Info");
 		    moreinfo[i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		    moreinfo[i].setBorder(new LineBorder(Color.black, 4, true));
 			moreinfo[i].setOpaque(true);
-			moreinfo[i].setBackground(new Color(255,140,0));
+			moreinfo[i].setBackground(hex2Rgb("#F0810F"));
 		    
 			pickup[i].setText("Pick Up");
 			pickup[i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
 			pickup[i].setBorder(new LineBorder(Color.black, 4, true));
 			pickup[i].setOpaque(true);
-		    pickup[i].setBackground(new Color(255,140,0));
+		    pickup[i].setBackground(hex2Rgb("#F0810F"));
 		   
 			bar[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			bar[i].setLayout(new FlowLayout(FlowLayout.LEFT));
 			
+			
+			bar[i].add(Box.createRigidArea(new Dimension(10,0)));
 			bar[i].add(task[i]);
 			bar[i].add(Box.createRigidArea(new Dimension(30,0)));
 			bar[i].add(pay[i]);
@@ -1086,13 +1115,206 @@ public class MainUI {
 			
 			list.add(bar[i]);	
 			list.add(Box.createRigidArea(new Dimension(0,10)));
+			
+			final int x=i;
+			
+			
+			moreinfo[x].addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) { 
+				if(!pop.isVisible()){
+					for (int y=0 ; y < bar.length; y++) {
+						bar[y].setBackground(Color.white);
+						task [y].setForeground(Color.black);
+						pay[y].setForeground(Color.black);
+						date[y].setForeground(Color.black);	
+					}
+				}
+				pop.show(bar[x],730,0);  					
+				bar[x].setBackground(Color.black);
+				task [x].setForeground(Color.white);
+				pay[x].setForeground(Color.white);
+				date[x].setForeground(Color.white);	
+
+			 }});	
+			
+			pickup[x].addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) { 
+				if(!pop2.isVisible()){
+					for (int y=0 ; y < bar.length; y++) {
+						bar[y].setBackground(Color.white);
+						task [y].setForeground(Color.black);
+						pay[y].setForeground(Color.black);
+						date[y].setForeground(Color.black);	
+					}
+				}
+				pop2.show(bar[x],0,40);  					
+				bar[x].setBackground(Color.black);
+				task [x].setForeground(Color.white);
+				pay[x].setForeground(Color.white);
+				date[x].setForeground(Color.white);	
+				
+				
+				no.addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) {
+					pop2.setVisible(false);
+				}});
+				
+				yes.addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) {
+					//whatever 
+				}});
+				/*
+				 bar[x].setBackground(Color.black);
+				task [x].setForeground(Color.white);
+				pay[x].setForeground(Color.white);
+				date[x].setForeground(Color.white);	
+				 int reply = JOptionPane.showConfirmDialog(null,"Are you sure you would like to pick up this task?" , "Confirm", JOptionPane.YES_NO_OPTION);
+			        if (reply == JOptionPane.YES_OPTION) {
+			          //here
+			        }
+			        else {
+			        	JOptionPane.getRootFrame().dispose(); 
+						for (int y=0 ; y < bar.length; y++) {
+							bar[y].setBackground(Color.white);
+							task [y].setForeground(Color.black);
+							pay[y].setForeground(Color.black);
+							date[y].setForeground(Color.black);	
+						}
+			        }
+				 */
+			}});
+	datecount=datecount+2;
 		}
 		
+		frame.addMouseListener((MouseListener) new CustomMouseListener());
+		sp.addMouseListener(new CustomMouseListener());
 		sp.setViewportView(list);
 		panel.add(name);
 		panel.add(sp);
+		return panel;   
+	}
+	
+
+	 class CustomMouseListener implements MouseListener {   //Chrisitan ur gonna have to create a new class according to ur needs, dont use this one
+	      public void mouseClicked(MouseEvent e) {
+	    	  for (int y=0 ; y < bar.length; y++) {
+					bar[y].setBackground(Color.white);
+					task [y].setForeground(Color.black);
+					pay[y].setForeground(Color.black);
+					date[y].setForeground(Color.black);	
+				}
+	      }
+	      public void mousePressed(MouseEvent e) {
+	      }
+	      public void mouseReleased(MouseEvent e) {
+	      }
+	      public void mouseEntered(MouseEvent e) {
+	      }
+	      public void mouseExited(MouseEvent e) {
+	      }
+	   }
+	
+	//Employer, location, start time end time, required skills, decription
+	public JPanel moreinfopanel(){
+		JPanel mainpanel= new JPanel();
+		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
+		mainpanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JPanel panel1= new JPanel();
+		JPanel panel2= new JPanel();
+		JPanel panel3= new JPanel();
+		JPanel panel4= new JPanel();
+		JPanel panel5= new JPanel();
+		
+		JLabel label1= new JLabel("Employer: ");
+		label1.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label2= new JLabel("some employer");
+		label2.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label3= new JLabel("Location: ");
+		label3.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label4= new JLabel("some locaton:");
+		label4.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label5= new JLabel("Time:");
+		label5.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label6= new JLabel("start - end:");
+		label6.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label7= new JLabel("Required Skills:");
+		label7.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label8= new JLabel("some skills");
+		label8.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label9= new JLabel("Description:");
+		label9.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		JLabel label10= new JLabel("A long description");
+		label10.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		
+		
+		panel1.add(label1);
+		panel1.add(label2);
+		panel2.add(label3);
+		panel2.add(label4);
+		panel3.add(label5);
+		panel3.add(label6);
+		
+		
+		JPanel longpanel= new JPanel();
+		longpanel.setLayout(new BoxLayout(longpanel, BoxLayout.Y_AXIS));
+		//longpanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		longpanel.add(Box.createRigidArea(new Dimension(0,10)));
+		longpanel.add(label7);
+		longpanel.add(label8);
+		longpanel.add(Box.createRigidArea(new Dimension(0,10)));
+		longpanel.add(label9);
+		longpanel.add(label10);
+		
+		label7.setAlignmentX(Component.CENTER_ALIGNMENT);
+		label8.setAlignmentX(Component.CENTER_ALIGNMENT);
+		label9.setAlignmentX(Component.CENTER_ALIGNMENT);
+		label10.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		mainpanel.add(panel1);
+		mainpanel.add(panel2);
+		mainpanel.add(panel3);
+		mainpanel.add(longpanel);
+
+
+
+	
+		
+		
+	    //mainpanel.add(Box.createRigidArea(new Dimension(300, 300)));
+		return mainpanel;
+	}
+	
+	
+	private JButton yes=new JButton(" Yes ");
+	private JButton no=new JButton(" No ");
+	public JPanel confirmpanel(){
+		JPanel panel=new JPanel();
+		panel.setLayout(new BorderLayout(0, 0));
+		panel.setBackground(Color.black);
+		
+		yes.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		yes.setBorder(new LineBorder(Color.black, 4, true));
+		yes.setOpaque(true);
+	    yes.setBackground(hex2Rgb("#F0810F"));
+	    
+	    no.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		no.setBorder(new LineBorder(Color.black, 4, true));
+		no.setOpaque(true);
+	    no.setBackground(hex2Rgb("#F0810F"));
+		
+		
+		JLabel label= new JLabel(" Are you sure you would like to pick up this task ? ");
+		label.setFont(new Font("Comfortaa", Font.PLAIN, 20));
+		label.setForeground(Color.white);
+		panel.add(label, BorderLayout.NORTH);	
+		
+		JPanel panelbuttons=new JPanel();
+		panelbuttons.setBackground(Color.black);
+		panelbuttons.add(yes);
+		panelbuttons.add(Box.createRigidArea(new Dimension(50,0)));
+		panelbuttons.add(no);
+		panel.add(panelbuttons, BorderLayout.SOUTH);
+		
 		return panel;
 	}
+
 	
 
 	public JPanel calenderpanel(){

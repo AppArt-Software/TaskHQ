@@ -19,26 +19,23 @@ public class Task {
 	private static int id;
 	private Account author;
 	private double wage;//if pay ==0, volunteer
-	
-	private String startTime;
-	private String startDate;
-	private String endDate;
-	private String endTime;
+	private String skillsRequired;
+	private String start;
+	private String end;
 	private String location;
 	private String description;
 	private TaskStatus status;
 	private String appOrPerson;
 	
-	Task(String title, Account author, double wage, String startDate, String endDate, String startTime, String endTime, String location, String description, String appOrPerson){
+	Task(String title, Account author, double wage, String start, String end, String location, String description, String appOrPerson, String skillsRequired){
 		
-		
+		this.skillsRequired=skillsRequired;
 		this.title=title;
 		this.author=author;
 		this.wage=wage;
-		this.startTime=startTime;
-		this.endTime=endTime;
-		this.startDate=startDate;
-		this.endDate=endDate;
+		this.start=start;
+		this.end=end;
+		this.appOrPerson=appOrPerson;
 		this.location=location;
 		this.description=description;
 		
@@ -54,19 +51,14 @@ public class Task {
 	double getWage(){
 		return this.wage;
 	}
-String getStartDate(){
-	return this.startDate;
+String getStart(){
+	return this.start;
 }
-String getEndDate(){
-	return this.endDate;
+String getEnd(){
+	return this.end;
 }
 	
-	String getStartTime(){
-		return this.startTime;
-	}
-	String getEndTime(){
-		return this.endTime;
-	}
+	
 	String getTitle(){
 		return this.title;
 	}
@@ -84,6 +76,9 @@ String getEndDate(){
 	String getAppOrPerson(){
 		return this.appOrPerson;
 	}
+	String getSkillsRequired(){
+		return this.skillsRequired;
+	}
 	
 	//setters
 	
@@ -91,11 +86,11 @@ String getEndDate(){
 		this.wage=wage;
 	}
 
-	void setStartTime(String startTime){
-		this.startTime=startTime;
+	void setStart(String start){
+		this.start=start;
 	}
-	void setEndTime(String endTime){
-		this.endTime=endTime;
+	void setEndTime(String end){
+		this.end=end;
 	}
 
 	void setLocation(String location){
@@ -107,14 +102,12 @@ String getEndDate(){
 	void setTitle(String title){
 		this.title=title;
 	}
-	void setStartDate(String startDate){
-		this.startDate=startDate;
-	}
-	void setEndDate(String endDate){
-		this.endDate=endDate;
-	}
+	
 	void setAppOrPerson(String appOrPerson){
 		this.appOrPerson=appOrPerson;
+	}
+	void setSkillsRequired(String skillsRequired){
+		this.skillsRequired=skillsRequired;
 	}
 	
 	
@@ -123,14 +116,13 @@ String getEndDate(){
 		
 		String newAuthor = author.getUsername();;
 		String newWage = Double.toString(wage);
-		String newStartTime=startTime;
-		String newEndTime = endTime;
-		String newStartDate =startDate;
-		String newEndDate= endDate;
+		String newStart=start;
+		String newEnd = end;
+		String newSkillsRequired=skillsRequired;
 		String newLocation = location;
 		String newDescription = description;
 		String newTitle = title;
-		String newAppOrPerson = appOrPerson;
+		String newAppOrPerson = checkPaymentMethod(appOrPerson);
 		
 		URL URLcreateAccount;
 		try {
@@ -143,14 +135,13 @@ String getEndDate(){
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 			   String data_string = URLEncoder.encode("author", "UTF-8") + "=" + URLEncoder.encode(newAuthor, "UTF-8") + "&" +
 			           URLEncoder.encode("pay", "UTF-8") + "=" + URLEncoder.encode(newWage, "UTF-8")+ "&" +
-					   URLEncoder.encode("appOrPerson", "UTF-8") + "=" + URLEncoder.encode(newAppOrPerson, "UTF-8")+ "&" +
-					   URLEncoder.encode("startTime", "UTF-8") + "=" + URLEncoder.encode(newStartTime, "UTF-8")+ "&" +
+					   URLEncoder.encode("skillsRequired", "UTF-8") + "=" + URLEncoder.encode(newSkillsRequired, "UTF-8")+ "&" +
 					   URLEncoder.encode("location", "UTF-8") + "=" + URLEncoder.encode(newLocation, "UTF-8")+ "&" +
-					   URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(newDescription, "UTF-8"+ "&" +
-					   URLEncoder.encode("endTime", "UTF-8") + "=" + URLEncoder.encode(newEndTime, "UTF-8")+ "&" +
+					   URLEncoder.encode("description", "UTF-8") + "=" + URLEncoder.encode(newDescription, "UTF-8")+ "&" +
 					   URLEncoder.encode("title", "UTF-8") + "=" + URLEncoder.encode(newTitle, "UTF-8")+ "&" +
-					URLEncoder.encode("startDate", "UTF-8") + "=" + URLEncoder.encode(newStartDate, "UTF-8")+ "&" +
-					URLEncoder.encode("endDate", "UTF-8") + "=" + URLEncoder.encode(newEndDate, "UTF-8"));
+					   URLEncoder.encode("paymentType", "UTF-8") + "=" + URLEncoder.encode(newAppOrPerson, "UTF-8")+ "&" +
+					   URLEncoder.encode("start", "UTF-8") + "=" + URLEncoder.encode(newStart, "UTF-8")+ "&" +
+					   URLEncoder.encode("end", "UTF-8") + "=" + URLEncoder.encode(newEnd, "UTF-8");
 
 			   bufferedWriter.write(data_string);
 			   bufferedWriter.flush();
@@ -302,26 +293,53 @@ String getEndDate(){
 			return "0";
 		}
 	}
+	String checkPaymentMethod(String method){
+		if(method.equals("person")){
+			return "0";
+		}
+		else {
+			return "1";
+		}
+	}
 	
 	static String parseJSON(String JSONString, String infoRequired){
-		System.out.println(JSONString);
+		//System.out.println(JSONString);
 		String returnString="";
 		JSONObject returnData = null;
 		JSONObject obj = new JSONObject(JSONString);
-			
-		JSONArray taskDetails = obj.getJSONArray("values");
+		JSONObject values = obj.getJSONObject("values");
+		JSONArray taskDetails = values.getJSONArray("taskDetails");
+		JSONArray statusDetails=values.getJSONArray("statusDetails");
+		
 		for(int i=0;i<taskDetails.length();i++){
 		returnData=taskDetails.getJSONObject(i);
-		returnString +="\n"+returnData.getString(infoRequired);
+		returnString+=returnData.getString(infoRequired)+" ";
 		}
 		return returnString;
 	}
+	static int numberOfTasks(String JSONString){ //task details, status details arrays
+		String returnString="";
+		JSONObject returnData = null;
+		JSONObject obj = new JSONObject(JSONString);
+		JSONObject values = obj.getJSONObject("values");	
+		JSONArray taskDetails = values.getJSONArray("taskDetails");
+		JSONArray statusDetails=values.getJSONArray("statusDetails");
+		int c =0;
+		for(int i=0;i<taskDetails.length();i++){
+		returnData=taskDetails.getJSONObject(i);
+		//returnString +="\n"+returnData.getString(infoRequired);
+		c++;
+		}
+		return c;
+	}
 	static String parseJSON(String JSONString){
+		String returnString="";
 		//return all info about all available tasks
 		return null;
 	}
 	public static void main(String[] args) {
-		
+		System.out.println(getTasks());
+		//System.out.println(parseJSON(getTasks(), "title"));
 	}
 
 }

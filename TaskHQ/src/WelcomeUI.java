@@ -83,7 +83,8 @@ public class WelcomeUI {
 		
 		btnCreateAccount.addActionListener(new ActionListener() { 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
+				
 				CreateAccountUI c = new CreateAccountUI();
 				c.main(null);
 			}
@@ -95,6 +96,14 @@ public class WelcomeUI {
 		btnLogin.setBackground(hex2Rgb("#063852"));
 		btnLogin.setBounds(215, 303, 271, 35);
 		frame.getContentPane().add(btnLogin);
+		btnLogin.addActionListener(new ActionListener() { 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				LoginUI log = new LoginUI();
+				log.main(null);
+			}
+		});
 	}
 	
 	/**
