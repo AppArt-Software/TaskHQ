@@ -1,5 +1,4 @@
-
-import java.awt.BorderLayout;
+ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -16,7 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -50,10 +49,15 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
+//import net.miginfocom.swing.MigLayout;
+import java.sql.Timestamp;
+
 import java.awt.CardLayout;
 import java.io.File;
 import java.io.IOException;
+//import java.security.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -63,7 +67,8 @@ import java.awt.Frame;
 
 
 public class MainUI {
-
+//fill in changes from word doc
+	private static String userNameLog = LoginUI.getUsername();
 	private JFrame frame;
 	private JPanel panel_3 = new JPanel();
 	private JTextField txtAddress;
@@ -72,11 +77,15 @@ public class MainUI {
 	private JPanel pStartDate, pStartTime, pEndTime, pEndDate, pAddress, panel, pTitle;
 	private JTextField txtSkill, txtTitle;
 	private JTabbedPane tabbedPane;
+	private static Account currentUser = fillAccountInfo(userNameLog);
+	private static Bio currentBio =fillBioInfo(userNameLog);
+	private JTextField txtAge;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		currentUser.setBio(currentBio);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -261,7 +270,7 @@ public class MainUI {
 	
 	public JPanel settings(){
 		JPanel panel=new JPanel();
-	
+		
 		 
 		JLabel lblUsername = new JLabel("Email: ");
 		lblUsername.setFont(new Font("Comfortaa", Font.PLAIN, 18));
@@ -278,7 +287,11 @@ public class MainUI {
 		JScrollPane sp = new JScrollPane(txtBio);
 		txtBio.setLineWrap(true);
 		txtBio.setFont(new Font("Comfortaa", Font.PLAIN, 14));
+		txtBio.setText(currentBio.getDescription());
+		if(txtBio.getText().equals("")){
 		txtBio.setText("Max. 150 characters");
+		}
+
 		txtBio.addFocusListener(new FocusListener(){
 			String bioText = "Max. 150 characters";
 			@Override
@@ -308,6 +321,9 @@ public class MainUI {
 					        JOptionPane.WARNING_MESSAGE);
 				}
 				else{
+				currentUser.getBio().setDescription(txtBio.getText());
+				currentUser.updateAccount();
+
 				txtBio.setText(txtBio.getText());
 				JOptionPane.showMessageDialog(null, "Bio Saved \n"+txtBio.getText(), "Bio", JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -365,16 +381,20 @@ public class MainUI {
 					JOptionPane.showMessageDialog(frame, "Skills exceeds character limit (max 150 characters)", "Skills Error",
 					        JOptionPane.WARNING_MESSAGE);
 				}
-				else{
+				else{ //add update
 				txtSkills.setText(txtSkills.getText());
 				JOptionPane.showMessageDialog(null, "Skills Saved \n"+txtSkills.getText(), "Skills", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
 		btnEditSkills.setFont(new Font("Comfortaa", Font.PLAIN, 13));
-		
+			
 		final JTextField txtPhoneNumber = new JTextField();
+		txtPhoneNumber.setText(currentBio.getPhoneNumber());
+		if(txtPhoneNumber.getText().equals("")){
 		txtPhoneNumber.setText("###-###-####");
+		}
+		
 		txtPhoneNumber.setFont(new Font("Comfortaa", Font.PLAIN, 16));
 		txtPhoneNumber.setColumns(10);
 		txtPhoneNumber.addFocusListener(new FocusListener(){
@@ -406,6 +426,9 @@ public class MainUI {
 					txtPhoneNumber.setText("###-###-####");
 				}
 				else{
+					currentUser.getBio().setPhoneNumber(txtPhoneNumber.getText());
+					currentUser.updateAccount();
+
 				txtPhoneNumber.setText(txtPhoneNumber.getText());;
 				JOptionPane.showMessageDialog(null, "Phone Number Saved \n"+txtPhoneNumber.getText(), "Phone Number", JOptionPane.INFORMATION_MESSAGE);
 				}}
@@ -415,11 +438,25 @@ public class MainUI {
 		
 		
 		
-		JLabel lblUsernameText = new JLabel("gleb@zvonkov.com");
+		JLabel lblUsernameText = new JLabel(currentUser.getUsername());//
 		lblUsernameText.setFont(new Font("Comfortaa", Font.PLAIN, 18));
 		
-		JLabel lblAgeText = new JLabel("18");
-		lblAgeText.setFont(new Font("Comfortaa", Font.PLAIN, 18));
+		JButton btnUpdateAge = new JButton("Update Age");
+		btnUpdateAge.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			//set details in here
+			}
+		});
+		btnUpdateAge.setOpaque(true);
+		btnUpdateAge.setForeground(Color.BLACK);
+		btnUpdateAge.setFont(new Font("Comfortaa", Font.PLAIN, 13));
+		btnUpdateAge.setBorder(new LineBorder(Color.black,4,true));
+		btnUpdateAge.setBackground(new Color(255, 140, 0));
+		
+		txtAge = new JTextField();
+		txtAge.setFont(new Font("Comfortaa", Font.PLAIN, 13));
+		txtAge.setText(Integer.toString(currentUser.getAge()));
+		txtAge.setColumns(10);
 		
 		
 		
@@ -432,30 +469,33 @@ public class MainUI {
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(lblPhoneNumber, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(txtPhoneNumber, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
 									.addComponent(lblUsername)
 									.addGap(18)
 									.addComponent(lblUsernameText, GroupLayout.PREFERRED_SIZE, 232, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
 									.addComponent(lblAge, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
 								.addComponent(lblBio, GroupLayout.PREFERRED_SIZE, 312, GroupLayout.PREFERRED_SIZE)
-								.addComponent(sp, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addComponent(sp, 0, 0, Short.MAX_VALUE)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addComponent(lblPhoneNumber, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(txtPhoneNumber, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE))))
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(lblAgeText, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE))
 								.addComponent(btnEditPhone, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
-								.addComponent(sp2, GroupLayout.PREFERRED_SIZE, 317, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblSkills)))
+								.addComponent(lblSkills)
+								.addComponent(sp2, GroupLayout.PREFERRED_SIZE, 323, GroupLayout.PREFERRED_SIZE)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(5)
+									.addComponent(txtAge, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(btnUpdateAge, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE))))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(96)
 							.addComponent(btnEditBio, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
 							.addGap(289)
 							.addComponent(btnEditSkills)))
-					.addContainerGap(72, Short.MAX_VALUE))
+					.addContainerGap(42, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -465,10 +505,11 @@ public class MainUI {
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(lblUsername, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
 							.addComponent(lblAge, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
-							.addComponent(lblUsernameText, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE))
+							.addComponent(lblUsernameText, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
+							.addComponent(txtAge, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(btnUpdateAge, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblAgeText, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
-							.addGap(13)
+							.addGap(61)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(lblPhoneNumber, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
 								.addComponent(txtPhoneNumber, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
@@ -479,8 +520,8 @@ public class MainUI {
 						.addComponent(lblSkills, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(sp, 0, 0, Short.MAX_VALUE)
-						.addComponent(sp2, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE))
+						.addComponent(sp, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
+						.addComponent(sp2, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnEditBio, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
@@ -495,9 +536,10 @@ public class MainUI {
 	
 	
 	
+	
 	public JPanel accountpanel (){
         JPanel inpanel=new JPanel ();
-		JLabel name= new JLabel ("Gleb Zvonkov ");
+		JLabel name= new JLabel (currentUser.getFirstName()+" "+currentUser.getLastName());
 		name.setFont(new Font("Comfortaa", Font.PLAIN, 40));
 		final JButton button = new JButton(new ImageIcon("settings.png"));
 		final JButton calendar=new JButton("My Tasks");
@@ -560,7 +602,7 @@ public class MainUI {
 	
 	public JPanel postshiftpanel() throws ParseException{
 		JPanel p = new JPanel();
-		p.setBackground(hex2Rgb("#F0810F"));		
+		p.setBackground(hex2Rgb("#F0810F"));	
 		p.setPreferredSize(new Dimension(550, 400));
 		p.setLayout(null);
 		
@@ -569,50 +611,51 @@ public class MainUI {
 		tabbedPane.setBounds(11, 11, 531, 298);
 		p.add(tabbedPane);
 		
-		JPanel pDescription = new JPanel();
-		tabbedPane.addTab("Description", null, pDescription, null);
-		pDescription.setLayout(null);
+		 JPanel pDescription = new JPanel();
+	        tabbedPane.addTab("Description", null, pDescription, null);
+	        pDescription.setLayout(null);
+	        
+	        txtDescription = new JTextArea();
+	        pDescription.add(txtDescription);
+	        txtDescription.setBounds(10, 82, 506, 141);
+	        
+	        JLabel lblTaskDescription = new JLabel("Description *");
+	        lblTaskDescription.setFont(new Font("Comfortaa", Font.PLAIN, 15));
+	        lblTaskDescription.setBounds(10, 57, 131, 14);
+	        pDescription.add(lblTaskDescription);
+	        
+	        panel = new JPanel();
+	        panel.setBounds(10, 101, 506, 130);
+	        pDescription.add(panel);
+	        panel.setBackground(Color.BLACK);
+	        
+	        txtTitle = new JTextField();
+	        txtTitle.setFont(new Font("Comfortaa", Font.PLAIN, 11));
+	        txtTitle.setColumns(10);
+	        txtTitle.setBackground(Color.WHITE);
+	        txtTitle.setBounds(10, 26, 271, 20);
+	        pDescription.add(txtTitle);
+	        
+	        pTitle = new JPanel();
+	        pTitle.setBackground(new Color(1, 26, 39));
+	        pTitle.setBounds(10, 26, 271, 23);
+	        pDescription.add(pTitle);
+	        
+	        JLabel lblTitle = new JLabel("Title *");
+	        lblTitle.setFont(new Font("Comfortaa", Font.PLAIN, 15));
+	        lblTitle.setBounds(11, 11, 108, 14);
+	        pDescription.add(lblTitle);
+	        
+	        JButton btnNext4 = new JButton("Next");
+	        btnNext4.setFont(new Font("Comfortaa", Font.BOLD, 11));
+	        btnNext4.setBounds(427, 234, 89, 23);
+	        btnNext4.addActionListener(new java.awt.event.ActionListener(){
+	             public void actionPerformed(ActionEvent e){  
+	                 tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex()+1);
+	             }    
+	         });
+	        pDescription.add(btnNext4);
 		
-		txtDescription = new JTextArea();
-		pDescription.add(txtDescription);
-		txtDescription.setBounds(10, 82, 506, 141);
-		
-		JLabel lblTaskDescription = new JLabel("Description *");
-		lblTaskDescription.setFont(new Font("Comfortaa", Font.PLAIN, 15));
-		lblTaskDescription.setBounds(10, 57, 131, 14);
-		pDescription.add(lblTaskDescription);
-		
-		panel = new JPanel();
-		panel.setBounds(10, 101, 506, 130);
-		pDescription.add(panel);
-		panel.setBackground(Color.BLACK);
-		
-		txtTitle = new JTextField();
-		txtTitle.setFont(new Font("Comfortaa", Font.PLAIN, 11));
-		txtTitle.setColumns(10);
-		txtTitle.setBackground(Color.WHITE);
-		txtTitle.setBounds(10, 26, 271, 20);
-		pDescription.add(txtTitle);
-		
-		pTitle = new JPanel();
-		pTitle.setBackground(new Color(1, 26, 39));
-		pTitle.setBounds(10, 26, 271, 23);
-		pDescription.add(pTitle);
-		
-		JLabel lblTitle = new JLabel("Title *");
-		lblTitle.setFont(new Font("Comfortaa", Font.PLAIN, 15));
-		lblTitle.setBounds(11, 11, 108, 14);
-		pDescription.add(lblTitle);
-		
-		JButton btnNext4 = new JButton("Next");
-		btnNext4.setFont(new Font("Comfortaa", Font.BOLD, 11));
-		btnNext4.setBounds(427, 234, 89, 23);
-		btnNext4.addActionListener(new java.awt.event.ActionListener(){
-		     public void actionPerformed(ActionEvent e){  
-		         tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex()+1);
-		     }    
-		 });
-		pDescription.add(btnNext4);
 		
 		JPanel pTaskTime = new JPanel();
 		tabbedPane.addTab("Task Time", null, pTaskTime, null);
@@ -850,6 +893,8 @@ public class MainUI {
 			scrollPane.setViewportView(lSkills);
 			pSkills.add(scrollPane);
 			
+		
+			
 			JLabel lblManditory = new JLabel("* = Required Field");
 			lblManditory.setHorizontalAlignment(SwingConstants.CENTER);
 			lblManditory.setFont(new Font("Comfortaa", Font.BOLD, 13));
@@ -863,7 +908,8 @@ public class MainUI {
 			btnCreateTask.setBackground(Color.WHITE);
 			
 			btnCreateTask.addActionListener(new java.awt.event.ActionListener(){
-			     public void actionPerformed(ActionEvent e){  
+			    
+				public void actionPerformed(ActionEvent e){  
 			    	 resetHighlights();
 			    	 
 			    	 String startDate = txtStartDate.getText().toString();
@@ -879,19 +925,40 @@ public class MainUI {
 			    	 boolean inApp = rbInApp.isSelected();
 			    	 ArrayList<String> skills = new ArrayList();
 			    	 String description = txtDescription.getText().toString();
-			    	 
+			    	 String appOrPerson="person";
 			    	 for (int i = 0; i < listModel.getSize(); i++) {
 			    		 skills.add(listModel.getElementAt(i));
 			    	 }
 			
 			    	 if (startDate.length() != 0 && startTime.length() != 0 && endDate.length() != 0 &&
-			    			 endTime.length() != 0 && address.length() != 0 && description.length() != 0 &&
-			    			 title.length() != 0) {
+			    			 endTime.length() != 0 && address.length() != 0 && description.length() != 0) {
 			    		 if (description.length() < 100) {
 			    			 if (countLines(description) < 5) {
-			    				 /*
-			    				  * TODO Create Task
-			    				  */
+			    				 if(volunteer){
+			    					 pay="0";
+			    				 }
+			    				 if(!volunteer){
+			    				 if(cash){
+			    					 appOrPerson="person";
+			    				 }
+			    				 else if(inApp){
+			    					 appOrPerson="app";
+			    				 }
+			    				 }
+			    				 else{
+			    					 appOrPerson="person";
+			    				 }
+			    				 String start = startDate+" "+startTime;
+			    				 String end = endDate+" "+endTime;
+			    				 //Task(String title, Account author, double wage, String start, String end, String location, String description, String appOrPerson, String skillsRequired){
+			    				 
+			    				 
+			    				 
+			    				 Task newTask = new Task(title, currentUser, Double.parseDouble(pay),start, end, address, description,appOrPerson, skills.toString());
+			    				
+			    				 newTask.createTask();
+			    				//show confirmation, add to calendar 
+			    				 
 			    			 } else {
 			    				 showError("Oops!","Your description must be less than 5 lines!");
 					     		 panel.setBackground(Color.RED);
@@ -915,7 +982,7 @@ public class MainUI {
 			    	 }
 			    	 
 			    	 
-			    	 System.out.println(startDate);
+			    	 //System.out.println(startDate);
 			     }
 			});
 			
@@ -929,7 +996,7 @@ public class MainUI {
 	}
 	
 	
-	public JPanel yourshiftpanel(){
+	public JPanel yourshiftpanel(){ //loop with tasks
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(new LineBorder(Color.black, 6, true));
@@ -949,21 +1016,34 @@ public class MainUI {
 		name.add(label);
 		name.add(label2);
 		name.add(label3);
+		int lengthArrays = Task.numberOfTasks(Task.getTasks());
+		JLabel task []=new JLabel[lengthArrays];
+		String[] taskText = new String[lengthArrays];
+		String parseStringTitles = Task.parseJSON(Task.getTasks().trim(), "title");
+		taskText=parseStringTitles.split(" ");
 		
-		JLabel task []=new JLabel[40];
-		JLabel pay[]=new JLabel[40];
-		JLabel date[]=new JLabel[40]; 
-		JButton moreinfo[]=new JButton[40];
-		JButton pickup []=new JButton[40];
+		String[] payText=new String[lengthArrays];
+		String parseStringPay = Task.parseJSON(Task.getTasks(), "pay");
+		payText=parseStringPay.split(" ");
+		
+		String[] dateText=new String[lengthArrays];
+		String parseStringDate = Task.parseJSON(Task.getTasks(), "start");
+		dateText=parseStringDate.split(" ");
+		
+		
+		JLabel pay[]=new JLabel[lengthArrays];
+		JLabel date[]=new JLabel[lengthArrays]; 
+		JButton moreinfo[]=new JButton[lengthArrays];
+		JButton pickup []=new JButton[lengthArrays];
 		
 		JScrollPane sp = new JScrollPane();
 		sp.setPreferredSize((new Dimension(800,400)));
 		
-		JPanel [] bar= new JPanel[40];
+		JPanel [] bar= new JPanel[lengthArrays];
 		JPanel list= new JPanel();
 		list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
 		
-		for (int i = 0; i < bar.length; i++) {
+		for (int i = 0; i < lengthArrays; i++) {
 			bar[i] = new JPanel();
 			task [i]=new JLabel();
 			pay[i]=new JLabel();
@@ -975,9 +1055,9 @@ public class MainUI {
 		    pay[i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		    date[i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		    		
-		    task [i].setText("Some Task");
-		    pay[i].setText("Some Pay");
-		    date[i].setText("Some Date");
+		    task [i].setText(taskText[i]);
+		    pay[i].setText(payText[i]);
+		    date[i].setText(dateText[i]);
 		    
 		    moreinfo[i].setText("More Info");
 		    moreinfo[i].setFont(new Font("Comfortaa", Font.PLAIN, 20));
@@ -1142,98 +1222,22 @@ public class MainUI {
 		    JOptionPane.ERROR_MESSAGE);
 	}
 
+	static Account fillAccountInfo(String username){
+		Account currentUser = new Account(username, Account.parseJSON(Account.getAccount(username), 0, "firstName"),Account.parseJSON(Account.getAccount(username), 0, "lastName"), Account.parseJSON(Account.getAccount(username), 0, "password"),Integer.parseInt(Account.parseJSON(Account.getAccount(username), 0, "age").trim()));
+		
+		
+		return currentUser;
+	}
+	static Bio fillBioInfo(String username){
+		Bio currentBio = new Bio(currentUser.getId());
+		currentBio.setCompletedJobs(Integer.parseInt(Account.parseJSON(Account.getAccount(username), 1, "completedJobs").trim())+1);
+		currentBio.setDescription(Account.parseJSON(Account.getAccount(username), 1, "description").trim());
+		currentBio.setHoursWorked(Integer.parseInt(Account.parseJSON(Account.getAccount(username), 1, "hoursWorked").trim()));
+		currentBio.setPhoneNumber(Account.parseJSON(Account.getAccount(username), 1, "phoneNumber").trim());
+	return currentBio;
+	}
+
 	
 }
 
 
-
-// add review panel
-//add approve panel 
-//add account panel
-//add add task panel
-
-//change main button
-//change so its panels
-
-
-
-
-/*
-     static Object[][] array2d = new Object[100/4][4];
-	 static String [] array = {"somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	 "somejob","million dollars", "bob", "clean up something","somejob","million dollars", "bob", "clean up something",
-	  };
-	 static String [] columnNames2 = {" 	TASK 	","	 Pay	 "," 	Employer 	"," 		Description 		"};
-	
-	 public static void arrayInto2D(String [] array, int columns){
-			int k = 0;		//keeps track of each element in 1d array
-			//keeps track of each row in 2d array 
-			for(int i = 0; i < array.length/columns; i++){
-				//keeps track of each column in 2darray
-				for(int j = 0; j < columns; j++){
-					//fills 2d array with at specific row and column
-					array2d[i][j] = array[k];
-					k++;
-				}
-			}//end for
-		}//end columnsArray
-	 
-	public JPanel yourshiftpanel(){
-		JPanel panel = new JPanel();
-		
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		JPanel bar=new JPanel();
-		//bar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		JTextField search=new JTextField(" Enter a date, employer, pay, task...");
-		search.setForeground(new Color(200,200,200));
-		search.setPreferredSize((new Dimension(300,50)));
-		search.setBorder(new LineBorder(Color.black, 4, true));
-		JButton button=new JButton("Search");
-		button.setPreferredSize((new Dimension(100,50)));
-		button.setBorder(new LineBorder(Color.black, 4, true));
-		button.setOpaque(true);
-		button.setBackground(new Color(255,140,0));
-		bar.add(search);
-		bar.add(button);
-		bar.add(Box.createRigidArea(new Dimension(400,0)));
-		
-		panel.add(bar);
-		
-		arrayInto2D(array, 4);
-		DefaultTableModel model = new DefaultTableModel(array2d, columnNames2);
-		JTable table = new JTable( model );  //https://tips4java.wordpress.com/2009/07/12/table-button-column/	
-		table.setDefaultEditor(Object.class, null);// set gap between rows, api in JTable
-		table.setRowHeight(40);
-		table.setRowMargin(3);		
-		
-	    JScrollPane sp = new JScrollPane(table); 
-	    sp.setBorder(new LineBorder(Color.black, 4, true));
-	    sp.setPreferredSize(new Dimension(800, 400));
-	    panel.add(sp); 
-	     
-	     
-	     Action keep = new AbstractAction()
-	     {
-	         public void actionPerformed(ActionEvent e)
-	         {	        	 
-	        	 JOptionPane.showMessageDialog(null, "A description or whatever else u want",	"Account Setting", JOptionPane.INFORMATION_MESSAGE);
-	         }
-	     };
-	      
-	     ButtonColumn buttonColumn = new ButtonColumn(table, keep, 3);
-	     buttonColumn.setMnemonic(KeyEvent.VK_D);
-	     
-		 return panel;
-	}
- */
