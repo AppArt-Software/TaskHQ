@@ -1,4 +1,4 @@
- import java.awt.BorderLayout;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -68,7 +68,9 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Frame;
 
 //add glebs ui and get task id to confirm picked up
-
+//check boolean to see if it should be posted
+//make array of tasks cnad check their booleans1
+//match title thorugh array adn to get id of task, 
 public class MainUI {
 //fill in changes from word doc
 	private static String userNameLog = LoginUI.getUsername();
@@ -94,6 +96,7 @@ public class MainUI {
 				try {
 					MainUI window = new MainUI();
 					window.frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1014,6 +1017,7 @@ private JPanel [] bar= new JPanel[lengthArrays];
 	
 	public JPanel pickshiftpanel(){
 		
+		
 		final JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBorder(new LineBorder(Color.black, 6, true));
@@ -1045,28 +1049,79 @@ private JPanel [] bar= new JPanel[lengthArrays];
 		JPanel list= new JPanel();
 		list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
 		
-		final JPopupMenu pop = new JPopupMenu();
-		pop.setBorder(new LineBorder(Color.black, 4, true));
-		pop.add(moreinfopanel());
-		final JPopupMenu pop2 = new JPopupMenu();
-		pop2.setBorder(new LineBorder(Color.black, 4, true));
-		pop2.add(confirmpanel());
+		
+		
 		
 
 		String[] taskText = new String[lengthArrays];
-		String parseStringTitles = Task.parseJSON(Task.getTasks().trim(), "title");
+		String parseStringTitles = Task.parseJSON(Task.getTasks().trim(),0, "title");
 		taskText=parseStringTitles.split(" ");
 
 		String[] payText=new String[lengthArrays];
-		String parseStringPay = Task.parseJSON(Task.getTasks(), "pay");
+		String parseStringPay = Task.parseJSON(Task.getTasks(),0, "pay");
 		payText=parseStringPay.split(" ");
 		
 		String[] dateText=new String[lengthArrays*2];
-		String parseStringDate = Task.parseJSON(Task.getTasks(), "start");
+		String parseStringDate = Task.parseJSON(Task.getTasks(),0, "start");
 		System.out.println(parseStringDate);
 		dateText=parseStringDate.split(" ");
 		int datecount=0;
+		
+		String[] employerText = new String[lengthArrays];
+		for(int i=0; i<lengthArrays;i++){
+			employerText[i]= Account.parseJSON(Account.getAccount(Task.parseJSONDetails(Task.getTaskDetails(i+3), "author")), 0, "firstName")+" "+Account.parseJSON(Account.getAccount(Task.parseJSONDetails(Task.getTaskDetails(i+3), "author")), 0, "lastName"); //get first/last name
+		}
+		String[] authorText = new String [lengthArrays];
+		for(int i=0;i<lengthArrays;i++){
+			authorText[i]=Task.parseJSONDetails(Task.getTaskDetails(i+3), "author");
+		}
+		
+
+		String[] locationText = new String[lengthArrays];
+		for(int i=0; i<lengthArrays;i++){
+			locationText[i] = Task.parseJSONDetails(Task.getTaskDetails(i+3), "location");
+		}
+		
+		String[] startText = new String[lengthArrays];
+		for(int i=0; i<lengthArrays;i++){
+			startText[i] = Task.parseJSONDetails(Task.getTaskDetails(i+3), "start");
+		}
+		String[] endText = new String[lengthArrays];
+		for(int i=0; i<lengthArrays;i++){
+			endText[i] = Task.parseJSONDetails(Task.getTaskDetails(i+3), "end");
+		}
+		String[] skillsText = new String[lengthArrays];
+		String nextSkill="";
+		for(int i=0; i<lengthArrays;i++){
+			nextSkill=Task.parseJSONDetails(Task.getTaskDetails(i+3), "skillsRequired");
+			skillsText[i]=nextSkill.substring(1, nextSkill.length()-2);
+		}
+		
+		String[] descriptionText = new String[lengthArrays];
+		for(int i=0; i<lengthArrays;i++){
+			descriptionText[i] = Task.parseJSONDetails(Task.getTaskDetails(i+3), "description");
+		}
+//		Account[] authorAccounts=new Account[lengthArrays];
+//		for(int i=0;i<lengthArrays;i++){
+//			authorAccounts[i]=fillAccountInfo(authorText[i]);
+//		}
+//		Task[] newTasks=new Task[lengthArrays];
+//		for(int i=0;i<lengthArrays;i++){
+//			newTasks[i]=new Task(taskText[i],authorAccounts[i], Double.parseDouble(payText[i]), startText[i], endText[i],locationText[i], descriptionText[i],"person", skillsText[i]);
+//		}
+//		TaskStatus[] newTaskStatus= new TaskStatus[lengthArrays];//fill with getTasks, taskDetails
+//		for(int i=0;i<lengthArrays;i++){
+//			newTasks[i].setTaskStatus(newTaskStatus[i]);
+//		}
+		final JPopupMenu pop2 = new JPopupMenu();
+		pop2.setBorder(new LineBorder(Color.black, 4, true));
+		pop2.add(confirmpanel());//parameter i then task details 
 		for (int i=0 ; i < lengthArrays; i++) {
+			//	public JPanel moreinfopanel(String employer, String location, String start, String end, String skills, String description){
+			final JPopupMenu pop = new JPopupMenu();
+			pop.setBorder(new LineBorder(Color.black, 4, true));
+			pop.add(moreinfopanel(employerText[i], locationText[i], startText[i], endText[i], skillsText[i], descriptionText[i]));
+
 			
 			bar[i] = new JPanel();
 			
@@ -1117,7 +1172,7 @@ private JPanel [] bar= new JPanel[lengthArrays];
 			list.add(Box.createRigidArea(new Dimension(0,10)));
 			
 			final int x=i;
-			
+			final int index=i;
 			
 			moreinfo[x].addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) { 
 				if(!pop.isVisible()){
@@ -1157,6 +1212,8 @@ private JPanel [] bar= new JPanel[lengthArrays];
 				}});
 				
 				yes.addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) {
+					
+					
 					//whatever 
 				}});
 				/*
@@ -1180,6 +1237,7 @@ private JPanel [] bar= new JPanel[lengthArrays];
 				 */
 			}});
 	datecount=datecount+2;
+	
 		}
 		
 		frame.addMouseListener((MouseListener) new CustomMouseListener());
@@ -1211,7 +1269,7 @@ private JPanel [] bar= new JPanel[lengthArrays];
 	   }
 	
 	//Employer, location, start time end time, required skills, decription
-	public JPanel moreinfopanel(){
+	public JPanel moreinfopanel(String employer, String location, String start, String end, String skills, String description){
 		JPanel mainpanel= new JPanel();
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
 		mainpanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -1223,23 +1281,23 @@ private JPanel [] bar= new JPanel[lengthArrays];
 		
 		JLabel label1= new JLabel("Employer: ");
 		label1.setFont(new Font("Comfortaa", Font.PLAIN, 20));
-		JLabel label2= new JLabel("some employer");
+		JLabel label2= new JLabel(employer);
 		label2.setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		JLabel label3= new JLabel("Location: ");
 		label3.setFont(new Font("Comfortaa", Font.PLAIN, 20));
-		JLabel label4= new JLabel("some locaton:");
+		JLabel label4= new JLabel(location);
 		label4.setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		JLabel label5= new JLabel("Time:");
 		label5.setFont(new Font("Comfortaa", Font.PLAIN, 20));
-		JLabel label6= new JLabel("start - end:");
+		JLabel label6= new JLabel("Start: "+start+" End: "+end);
 		label6.setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		JLabel label7= new JLabel("Required Skills:");
 		label7.setFont(new Font("Comfortaa", Font.PLAIN, 20));
-		JLabel label8= new JLabel("some skills");
+		JLabel label8= new JLabel(skills);
 		label8.setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		JLabel label9= new JLabel("Description:");
 		label9.setFont(new Font("Comfortaa", Font.PLAIN, 20));
-		JLabel label10= new JLabel("A long description");
+		JLabel label10= new JLabel(description);
 		label10.setFont(new Font("Comfortaa", Font.PLAIN, 20));
 		
 		
@@ -1283,6 +1341,7 @@ private JPanel [] bar= new JPanel[lengthArrays];
 	
 	
 	private JButton yes=new JButton(" Yes ");
+
 	private JButton no=new JButton(" No ");
 	public JPanel confirmpanel(){
 		JPanel panel=new JPanel();
@@ -1457,6 +1516,11 @@ private JPanel [] bar= new JPanel[lengthArrays];
 		currentBio.setHoursWorked(Integer.parseInt(Account.parseJSON(Account.getAccount(username), 1, "hoursWorked").trim()));
 		currentBio.setPhoneNumber(Account.parseJSON(Account.getAccount(username), 1, "phoneNumber").trim());
 	return currentBio;
+	}
+	static Task[] fillTasks(){
+		
+		
+		return null;
 	}
 
 	
