@@ -109,6 +109,9 @@ String getEnd(){
 	void setSkillsRequired(String skillsRequired){
 		this.skillsRequired=skillsRequired;
 	}
+	void setTaskStatus(TaskStatus status){
+		this.status=status;
+	}
 	
 	
 	 void createTask(){
@@ -302,7 +305,7 @@ String getEnd(){
 		}
 	}
 	
-	static String parseJSON(String JSONString, String infoRequired){
+	static String parseJSON(String JSONString,int taskOrStatus, String infoRequired){
 		//System.out.println(JSONString);
 		String returnString="";
 		JSONObject returnData = null;
@@ -310,10 +313,17 @@ String getEnd(){
 		JSONObject values = obj.getJSONObject("values");
 		JSONArray taskDetails = values.getJSONArray("taskDetails");
 		JSONArray statusDetails=values.getJSONArray("statusDetails");
-		
+		if(taskOrStatus ==0){
 		for(int i=0;i<taskDetails.length();i++){
 		returnData=taskDetails.getJSONObject(i);
 		returnString+=returnData.getString(infoRequired)+" ";
+		}
+		}
+		else if(taskOrStatus==1){
+			for(int i=0;i<taskDetails.length();i++){
+			returnData=statusDetails.getJSONObject(i);
+			returnString+=returnData.getString(infoRequired)+" ";
+			}
 		}
 		return returnString;
 	}
@@ -332,14 +342,21 @@ String getEnd(){
 		}
 		return c;
 	}
-	static String parseJSON(String JSONString){
+	static String parseJSONDetails(String JSONString, String infoRequired){
 		String returnString="";
-		//return all info about all available tasks
-		return null;
+		JSONObject returnData = null;
+		JSONObject obj = new JSONObject(JSONString);
+		JSONArray values= obj.getJSONArray("values");
+		for(int i=0;i<values.length();i++){
+			returnData=values.getJSONObject(i);
+			returnString+=returnData.getString(infoRequired)+" ";
+		}
+		return returnString;
 	}
 	public static void main(String[] args) {
-		System.out.println(getTasks());
-		//System.out.println(parseJSON(getTasks(), "title"));
+		//System.out.println(parseJSON(getTaskDetails(3),"author"));
+		//System.out.println(parseJSONDetails(Task.getTaskDetails(3), ""));
+		System.out.println(parseJSON(getTasks(), 1, "pickedUp"));
 	}
 
 }
