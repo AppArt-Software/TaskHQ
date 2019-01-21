@@ -1,4 +1,17 @@
+/**
+***********************************************
+ @Author : Akram Hannoufa
+ @Last Modified: January 20th, 2019
+ @Description: One of the base classes for TaskHQ. Account class holds necessary info for a user in TaskHQ
+ @Dependencies: 
+***********************************************
+*/
+
+
+
 package baseClasses;
+
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.*;
@@ -6,20 +19,28 @@ import java.util.*;
 
 import org.json.*;
 
-//import org.json.JSONParser;
+//Account Class
 public class Account {
 
-	public  static int id;
-	static private String username; //email?
-	static private String firstName;
-	static private String lastName;
-	static private String password;
-	static private int age;
+	public  static int id; //set by scripts
+	static private String username; //email
+	static private String firstName; //user first name
+	static private String lastName; //user last name
+	static private String password; //user password
+	static private int age; //user age
 	
-	private static Bio bio;
-	private Review reviews;
+	private static Bio bio; //user bio, uses Bio class
+	private Review reviews; //user reviews, uses Review class
 	
 	//Constructor
+	/**
+	 * January 20th, 2019 Account: Constructor for account class in TaskHQ
+	 * 
+	 * @param String userName, String firstName, String lastName, String password, int age
+	 * @return 
+	 * @dependencies none
+	 * 
+	 */
 	public Account(String userName, String firstName, String lastName, String password, int age){
 		this.username=userName;
 		this.firstName=firstName;
@@ -75,26 +96,34 @@ public class Account {
 		this.bio=bio;
 	}
 	
-	
+	/**
+	 * January 20th, 2019 createAccount: Sends data to server to create account
+	 * 
+	 * @param none/gets from Account object, (username, firstName, lastName, password, age)
+	 * @return none
+	 * @dependencies URL, bufferedWriter, OutputStream
+	 * 
+	 */
 	public void createAccount(){
-		
+		//parameters from object
 		String newUsername =username; 
 		String newFirstName =firstName;
 		String newLastName=lastName;
 		String newPassword=password;
-		String newAge=Integer.toString(age);//change to int later
+		String newAge=Integer.toString(age);
 		
 		 
 		URL URLcreateAccount;
 		try {
-			URLcreateAccount = new URL("http://104.196.62.218/CreateAccount.php");
-			HttpURLConnection httpUrlConnection = (HttpURLConnection) URLcreateAccount.openConnection();
+			URLcreateAccount = new URL("http://104.196.62.218/CreateAccount.php"); //create url to server
+			HttpURLConnection httpUrlConnection = (HttpURLConnection) URLcreateAccount.openConnection(); //open connection
 			httpUrlConnection.setRequestMethod("POST");
 			httpUrlConnection.setDoOutput(true);
 			OutputStream outputStream = httpUrlConnection.getOutputStream();
 			
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-			   String data_string = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(newUsername, "UTF-8") + "&" +
+			  //format data 
+			String data_string = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(newUsername, "UTF-8") + "&" +
 			           URLEncoder.encode("firstName", "UTF-8") + "=" + URLEncoder.encode(newFirstName, "UTF-8")+ "&" +
 					   URLEncoder.encode("lastName", "UTF-8") + "=" + URLEncoder.encode(newLastName, "UTF-8")+ "&" +
 					   URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(newPassword, "UTF-8")+ "&" +
@@ -102,35 +131,46 @@ public class Account {
 
 			   bufferedWriter.write(data_string);
 			   bufferedWriter.flush();
-			   bufferedWriter.close();
+			   bufferedWriter.close(); //close stream
 			   outputStream.close();
-			 //Getting data
+
 			   InputStream inputStream = httpUrlConnection.getInputStream();
 			  
 			   inputStream.close();
-			   httpUrlConnection.disconnect();
+			   httpUrlConnection.disconnect();//disconnect from server
 			  
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
-		//return newAge;
+		
 		
 		 
 		 
 
 }
-	public static void updateAccount(){ //how to make username constant?
+	/**
+	 * January 20th, 2019 updateAccount: Updates account info on server
+	 * 
+	 * @param String userName, String firstName, String lastName, String password, int age, Strings: skills, completedJobs, hoursWorked, description
+	 * 			phoneNumber
+	 * @return none
+	 * @dependencies URL, bufferedWriter, OutputStream
+	 * 
+	 */
+	public static void updateAccount(){ 
+		//all parameters taken from current object and ucrrent object Bio
 		String newUsername =username; 
 		String newFirstName =firstName;
 		String newLastName=lastName;
 		String newPassword=password;
-		String newAge=Integer.toString(id);//change to int later
+		String newAge=Integer.toString(id);
 		String newSkills = bio.getSkills().toString();
+		//data from bio
 		String newCompletedJobs =Integer.toString(bio.getCompletedJobs());
 		String newHoursWorked = Integer.toString(bio.getHoursWorked());
 		String newDescription = bio.getDescription();
@@ -139,14 +179,16 @@ public class Account {
 		 
 		URL URLcreateAccount;
 		try {
-			URLcreateAccount = new URL("http://104.196.62.218/UpdateAccount.php");
+			URLcreateAccount = new URL("http://104.196.62.218/UpdateAccount.php"); //create URL to correct server
 			HttpURLConnection httpUrlConnection = (HttpURLConnection) URLcreateAccount.openConnection();
+			//open connection 
 			httpUrlConnection.setRequestMethod("POST");
 			httpUrlConnection.setDoOutput(true);
 			OutputStream outputStream = httpUrlConnection.getOutputStream();
 			
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-			   String data_string = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(newUsername, "UTF-8") + "&" +
+			   //format data to be sent to server
+			String data_string = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(newUsername, "UTF-8") + "&" +
 			           URLEncoder.encode("firstName", "UTF-8") + "=" + URLEncoder.encode(newFirstName, "UTF-8")+ "&" +
 					   URLEncoder.encode("lastName", "UTF-8") + "=" + URLEncoder.encode(newLastName, "UTF-8")+ "&" +
 					   URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(newPassword, "UTF-8")+ "&" +
@@ -160,32 +202,40 @@ public class Account {
 			   bufferedWriter.write(data_string);
 			   bufferedWriter.flush();
 			   bufferedWriter.close();
-			   outputStream.close();
-			 //Getting data
+			   outputStream.close(); //close stream
+			 
 			   InputStream inputStream = httpUrlConnection.getInputStream();
 			  
 			   inputStream.close();
-			   httpUrlConnection.disconnect();
+			   httpUrlConnection.disconnect(); //disconnect from server
 			  
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-		//return newAge;
+		
 		
 	}
+	
+	/**
+	 * January 20th, 2019 getAccount: gets account info from server
+	 * 
+	 * @param String userName
+	 * @return String returnString
+	 * @dependencies URL, bufferedWriter, OutputStream, InputStream
+	 * 
+	 */
 	
 	public static String getAccount(String userName){
 		
 		String JSON_STRING;
-		String returnString="";
+		String returnString=""; //holds account info to be returned
 		try {
-			   URL url = new URL("http://104.196.62.218/GetAccount.php");
-			   HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+			   URL url = new URL("http://104.196.62.218/GetAccount.php"); //create url
+			   HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(); //open connection
 			   httpUrlConnection.setRequestMethod("POST");
 			   httpUrlConnection.setDoOutput(true);
 			   OutputStream outputStream = httpUrlConnection.getOutputStream();
@@ -195,20 +245,21 @@ public class Account {
 			   bufferedWriter.flush();
 			   bufferedWriter.close();
 
-			   //Getting data
-			   InputStream inputStream = httpUrlConnection.getInputStream();
+			   
+			   InputStream inputStream = httpUrlConnection.getInputStream(); //create input stream
+			  //setup reader
 			   BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-			   StringBuilder stringBuilder = new StringBuilder();
+			   StringBuilder stringBuilder = new StringBuilder(); //string builder to receive JSON data
 
 			   while ((JSON_STRING = bufferedReader.readLine()) != null) {
 
-			       stringBuilder.append(JSON_STRING + "\n");
+			       stringBuilder.append(JSON_STRING + "\n"); //builds string from data being received
 			   }
 
-			   bufferedReader.close();
-			   inputStream.close();
-			   httpUrlConnection.disconnect();
-			   returnString=stringBuilder.toString().trim();
+			   bufferedReader.close(); //close reader
+			   inputStream.close(); //close input
+			   httpUrlConnection.disconnect(); //disconnect from server
+			   returnString=stringBuilder.toString().trim(); //trim adn return data string
 			
 
 			}
@@ -221,20 +272,32 @@ public class Account {
 		 return returnString;
 
 	}
-	public static String parseJSON(String JSONString,int accountOrBio, String infoRequired){ //change to allow parameter on what value is needed, if statements??
+	
+	/**
+	 * January 20th, 2019 parseJSON: parses and returns data from account info
+	 * 
+	 * @param String JSONString, int accountOrBio, String infoRequired
+	 * @return String returnString
+	 * @dependencies JSONObject, JSONArray
+	 * 
+	 */
+	public static String parseJSON(String JSONString,int accountOrBio, String infoRequired){ 
+		
 		if (JSONString.length() > 0) {
-		String returnString="";
-		JSONObject returnData = null;
-		JSONObject obj = new JSONObject(JSONString);
-		JSONObject values = obj.getJSONObject("values");	
-		JSONArray accountDetailsArray = values.getJSONArray("accountDetails");
-		JSONArray bioDetailsArray = values.getJSONArray("bioDetails");
+		String returnString=""; //holds data to be returned
+		JSONObject returnData = null; 
+		JSONObject obj = new JSONObject(JSONString); //build JSONObject
+		JSONObject values = obj.getJSONObject("values");	 //gets values object
+		JSONArray accountDetailsArray = values.getJSONArray("accountDetails"); //account details JSONarray
+		JSONArray bioDetailsArray = values.getJSONArray("bioDetails");//bio details JSONarray
 		for(int i=0;i<accountDetailsArray.length();i++){
-			if(accountOrBio==0){
+			
+			if(accountOrBio==0){ //returns required data from account
 				returnData = accountDetailsArray.getJSONObject(i);
 				returnString += returnData.getString(infoRequired)+"\t";
 			}
-			else if(accountOrBio==1){
+			
+			else if(accountOrBio==1){ //return required data from bio
 				returnData = bioDetailsArray.getJSONObject(i);
 				returnString+=returnData.getString(infoRequired)+"\t";
 			}
@@ -242,7 +305,7 @@ public class Account {
 		
 		}
 		
-		return returnString;
+		return returnString; //returns data as string
 		} else {
 			return null;
 		}
@@ -251,8 +314,7 @@ public class Account {
 	
 	
 public static void main(String[] args) {
-	//encrypt
-	System.out.println(Account.getAccount("hannakra736@gotvdsb.ca"));
+
 	
 }
 }

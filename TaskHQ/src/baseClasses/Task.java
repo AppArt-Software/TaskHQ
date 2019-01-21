@@ -1,3 +1,11 @@
+/**
+***********************************************
+ @Author : Akram Hannoufa
+ @Last Modified: January 20th, 2019
+ @Description: One of the base classes for TaskHQ. Task class holds necessary info for a Task in TaskHQ
+  
+***********************************************
+*/
 package baseClasses;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,18 +24,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Task {
-	private String title; //add stuff 
-	private static int id;
-	private Account author;
-	private double wage;//if pay ==0, volunteer
-	private String skillsRequired;
-	private String start;
-	private String end;
-	private String location;
-	private String description;
-	private TaskStatus status;
-	private String appOrPerson;
+	private String title; //title of task
+	private static int id; //added by server
+	private Account author; //author of task
+	private double wage;//if pay ==0, volunteer, holds pay
+	private String skillsRequired; //skills required for task
+	private String start; //start date and time
+	private String end; //end date and time
+	private String location; //location of task
+	private String description; //description of task
+	private TaskStatus status; //TaskStatus of task
+	private String appOrPerson; //holds whether task will be paid in cash (person) or through app
 	
+	//constructor
 	public Task(String title, Account author, double wage, String start, String end, String location, String description, String appOrPerson, String skillsRequired){
 		
 		this.skillsRequired=skillsRequired;
@@ -114,10 +123,17 @@ public class Task {
 		this.status=status;
 	}
 	
-	
+	/**
+	 * January 20th, 2019 createTask: Sends data to server to create a task 
+	 * 
+	 * @param gets from Task object, (Strings: author, wage, start, end, skills, location, description, title, appOrPerson)
+	 * @return none
+	 * @dependencies URL, bufferedWriter, OutputStream, InputStream
+	 * 
+	 */
 	public void createTask(){
 		
-		
+		//parameters from  Task object
 		String newAuthor = author.getUsername();;
 		String newWage = Double.toString(wage);
 		String newStart=start;
@@ -126,18 +142,20 @@ public class Task {
 		String newLocation = location;
 		String newDescription = description;
 		String newTitle = title;
-		String newAppOrPerson = checkPaymentMethod(appOrPerson);
+		String newAppOrPerson = checkPaymentMethod(appOrPerson); //returns 0 for cash, 1 for through app
 		
 		URL URLcreateAccount;
 		try {
-			URLcreateAccount = new URL("http://104.196.62.218/CreateTask.php");
+			URLcreateAccount = new URL("http://104.196.62.218/CreateTask.php"); //create url
 			HttpURLConnection httpUrlConnection = (HttpURLConnection) URLcreateAccount.openConnection();
+			//open connection
 			httpUrlConnection.setRequestMethod("POST");
 			httpUrlConnection.setDoOutput(true);
-			OutputStream outputStream = httpUrlConnection.getOutputStream();
+			OutputStream outputStream = httpUrlConnection.getOutputStream(); //output stream
 			
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-			   String data_string = URLEncoder.encode("author", "UTF-8") + "=" + URLEncoder.encode(newAuthor, "UTF-8") + "&" +
+			   //format strings to be sent
+			String data_string = URLEncoder.encode("author", "UTF-8") + "=" + URLEncoder.encode(newAuthor, "UTF-8") + "&" +
 			           URLEncoder.encode("pay", "UTF-8") + "=" + URLEncoder.encode(newWage, "UTF-8")+ "&" +
 					   URLEncoder.encode("skillsRequired", "UTF-8") + "=" + URLEncoder.encode(newSkillsRequired, "UTF-8")+ "&" +
 					   URLEncoder.encode("location", "UTF-8") + "=" + URLEncoder.encode(newLocation, "UTF-8")+ "&" +
@@ -147,40 +165,52 @@ public class Task {
 					   URLEncoder.encode("start", "UTF-8") + "=" + URLEncoder.encode(newStart, "UTF-8")+ "&" +
 					   URLEncoder.encode("end", "UTF-8") + "=" + URLEncoder.encode(newEnd, "UTF-8");
 
-			   bufferedWriter.write(data_string);
+			   bufferedWriter.write(data_string); //write data
 			   bufferedWriter.flush();
-			   bufferedWriter.close();
+			   bufferedWriter.close(); //close streama and writer
 			   outputStream.close();
-			 //Getting data
+			
 			   InputStream inputStream = httpUrlConnection.getInputStream();
 			  
 			   inputStream.close();
-			   httpUrlConnection.disconnect();
+			   httpUrlConnection.disconnect(); //disconnect from server
 			  
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+		
+			
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
+			
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * January 20th, 2019 getTaskDetails: Gets details on speciifed task
+	 * 
+	 * @param int id
+	 * @return String returnString
+	 * @dependencies URL, bufferedWriter, OutputStream, InputStream
+	 * 
+	 */
 	public static String getTaskDetails(int id){
-		String newId = Integer.toString(id);
+		String newId = Integer.toString(id); //id specific to task
 		String JSON_STRING;
-		String returnString="";
+		String returnString=""; //holds data to be returned
 		try {
-			   URL url = new URL("http://104.196.62.218/GetTaskDetails.php");
+			   URL url = new URL("http://104.196.62.218/GetTaskDetails.php"); //url
 			   HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+			   //open connection
 			   httpUrlConnection.setRequestMethod("POST");
 			   httpUrlConnection.setDoOutput(true);
 			   OutputStream outputStream = httpUrlConnection.getOutputStream();
 			   BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+			   //format parameter being sent to server 
 			   String data_string = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(newId, "UTF-8");
-			   bufferedWriter.write(data_string);
+			   bufferedWriter.write(data_string); //write date
 			   bufferedWriter.flush();
-			   bufferedWriter.close();
+			   bufferedWriter.close(); //close writer
 
 			   //Getting data
 			   InputStream inputStream = httpUrlConnection.getInputStream();
@@ -188,14 +218,14 @@ public class Task {
 			   StringBuilder stringBuilder = new StringBuilder();
 
 			   while ((JSON_STRING = bufferedReader.readLine()) != null) {
-
+				   //build returned data to string
 			       stringBuilder.append(JSON_STRING + "\n");
 			   }
 
-			   bufferedReader.close();
-			   inputStream.close();
-			   httpUrlConnection.disconnect();
-			   returnString=stringBuilder.toString().trim();
+			   bufferedReader.close(); 
+			   inputStream.close();//close stream
+			   httpUrlConnection.disconnect(); //disconnect from server
+			   returnString=stringBuilder.toString().trim(); //trim string built
 			
 			   System.out.println("Task details " + returnString);
 			}
@@ -204,30 +234,39 @@ public class Task {
 			   e.printStackTrace();
 			} catch (IOException e) {
 			   e.printStackTrace();
-			}
-		 return returnString;
+			} 
+		 return returnString; //return string built
 
 	}
+	/**
+	 * January 20th, 2019 getTasks: Gets all tasks on TaskHQ server
+	 * 
+	 * @param none
+	 * @return String returnString
+	 * @dependencies URL, bufferedWriter, OutputStream
+	 * 
+	 */
 	public static String getTasks(){
 		
 			String JSON_STRING;
-			String returnString="";
+			String returnString=""; //holds data returned
 			try {
-				   URL url = new URL("http://104.196.62.218/GetTasks.php");
+				   URL url = new URL("http://104.196.62.218/GetTasks.php"); //url 
 				   HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+				   //open connection
 				   httpUrlConnection.setRequestMethod("POST");
 				   httpUrlConnection.setDoOutput(true);
 				   OutputStream outputStream = httpUrlConnection.getOutputStream();
 				   BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-				  // String data_string = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(newId, "UTF-8");
-				   //bufferedWriter.write(data_string);
+				  
 				   bufferedWriter.flush();
 				   bufferedWriter.close();
 
-				   //Getting data
-				   InputStream inputStream = httpUrlConnection.getInputStream();
+				   
+				   InputStream inputStream = httpUrlConnection.getInputStream(); //input stream
 				   BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-				   StringBuilder stringBuilder = new StringBuilder();
+				   StringBuilder stringBuilder = new StringBuilder(); 
+				   //builds string with data being read in
 
 				   while ((JSON_STRING = bufferedReader.readLine()) != null) {
 
@@ -235,61 +274,83 @@ public class Task {
 				   }
 
 				   bufferedReader.close();
-				   inputStream.close();
-				   httpUrlConnection.disconnect();
-				   returnString=stringBuilder.toString().trim();
+				   inputStream.close(); //close input stream
+				   httpUrlConnection.disconnect(); //disconnect from server
+				   returnString=stringBuilder.toString().trim(); //trim string returned
 				
 
 				}
 			
 			 catch (MalformedURLException e) {
+				 
 				   e.printStackTrace();
 				} catch (IOException e) {
+					
 				   e.printStackTrace();
 				}
-			 return returnString;
+			 return returnString; //return string built
 	 }
+	/**
+	 * January 20th, 2019 updateTaskStatus: updates a task's details/status on server
+	 * 
+	 * @param gets from Task object (int id, booleans: posted, pickedUp, accepted, completed
+	 * @return none
+	 * @dependencies URL, bufferedWriter, OutputStream
+	 * 
+	 */
 	public static void updateTaskStatus(int id, boolean posted, boolean pickedUp, boolean accepted, boolean completed){
-		 String newId = Integer.toString(id);
-		 String newPosted= checkIfTrue(posted);
+		 //parameters from task object 
+		String newId = Integer.toString(id);
+		//booleans return 0 for true, 1 for false, send as string
+		 String newPosted= checkIfTrue(posted); 
 		 String newPickedUp = checkIfTrue(pickedUp);
 		 String newAccepted = checkIfTrue(accepted);
 		 String newCompleted = checkIfTrue(completed);
 		 
 		 URL URLcreateAccount;
 			try {
-				URLcreateAccount = new URL("http://104.196.62.218/UpdateTaskStatus.php");
+				URLcreateAccount = new URL("http://104.196.62.218/UpdateTaskStatus.php"); //url
 				HttpURLConnection httpUrlConnection = (HttpURLConnection) URLcreateAccount.openConnection();
+				//open connection
 				httpUrlConnection.setRequestMethod("POST");
 				httpUrlConnection.setDoOutput(true);
 				OutputStream outputStream = httpUrlConnection.getOutputStream();
 				
 				BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-				   String data_string = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(newId, "UTF-8") + "&" +
+				//format data to be sent, encode   
+				String data_string = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode(newId, "UTF-8") + "&" +
 				           URLEncoder.encode("posted", "UTF-8") + "=" + URLEncoder.encode(newPosted, "UTF-8")+ "&" +
 						   URLEncoder.encode("pickedUp", "UTF-8") + "=" + URLEncoder.encode(newPickedUp, "UTF-8")+ "&" +
 						   URLEncoder.encode("accepted", "UTF-8") + "=" + URLEncoder.encode(newAccepted, "UTF-8")+ "&" +
 						   URLEncoder.encode("completed", "UTF-8") + "=" + URLEncoder.encode(newCompleted, "UTF-8");
 
-				   bufferedWriter.write(data_string);
+				   bufferedWriter.write(data_string); //write data to server
 				   bufferedWriter.flush();
-				   bufferedWriter.close();
+				   bufferedWriter.close(); //close writer
 				   outputStream.close();
-				 //Getting data
+
 				   InputStream inputStream = httpUrlConnection.getInputStream();
 				  
 				   inputStream.close();
-				   httpUrlConnection.disconnect();
+				   httpUrlConnection.disconnect(); //disconnect from server
 				  
 
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 	 }
+	/**
+	 * January 20th, 2019 checkIfTrue: checks values of a boolean, returns corresponding int as string
+	 * 
+	 * @param boolean toCheck
+	 * @return String, "0" or "1"
+	 * @dependencies None
+	 * 
+	 */
 	public static String checkIfTrue(boolean toCheck){
 		if(toCheck){
 			return "1";
@@ -298,6 +359,15 @@ public class Task {
 			return "0";
 		}
 	}
+	/**
+	 * January 20th, 2019 checkPaymentMethod: checks values of paymentMethod (person or app)
+	 * 									returns corresponsing int as string
+	 * 
+	 * @param String method
+	 * @return String, "0" or "1"
+	 * @dependencies None
+	 * 
+	 */
 	public String checkPaymentMethod(String method){
 		if(method.equals("person")){
 			return "0";
@@ -306,31 +376,46 @@ public class Task {
 			return "1";
 		}
 	}
-	
+	/**
+	 * January 20th, 2019 parseJSON: parses and returns data from task info (task details or status details)
+	 * 
+	 * @param String JSONString, int taskOrStatus, String infoRequired
+	 * @return String returnString
+	 * @dependencies JSONObject, JSONArray
+	 * 
+	 */
 	public static String parseJSON(String JSONString,int taskOrStatus, String infoRequired){
-		//System.out.println(JSONString);
-		String returnString="";
-		System.out.println(JSONString);
+		
+		String returnString=""; //holds returned data
+		
 		JSONObject returnData = null;
-		JSONObject obj = new JSONObject(JSONString);
-		JSONObject values = obj.getJSONObject("values");
-		JSONArray taskDetails = values.getJSONArray("taskDetails");
-		JSONArray statusDetails=values.getJSONArray("statusDetails");
-		if(taskOrStatus ==0){
+		JSONObject obj = new JSONObject(JSONString); //builds JSON object
+		JSONObject values = obj.getJSONObject("values"); //builds object values
+		JSONArray taskDetails = values.getJSONArray("taskDetails"); //array of task details
+		JSONArray statusDetails=values.getJSONArray("statusDetails"); //array of status details
+		if(taskOrStatus ==0){ //if required info is in task details
 		for(int i=0;i<taskDetails.length();i++){
 		returnData=taskDetails.getJSONObject(i);
-		returnString+=returnData.getString(infoRequired)+" ";
+		returnString+=returnData.getString(infoRequired)+" "; //build string with info required from taskDetails array
 		}
 		}
-		else if(taskOrStatus==1){
+		else if(taskOrStatus==1){ //if required info is in status details
 			for(int i=0;i<taskDetails.length();i++){
-			returnData=statusDetails.getJSONObject(i);
-			returnString+=returnData.getString(infoRequired)+" ";
+			returnData=statusDetails.getJSONObject(i); 
+			returnString+=returnData.getString(infoRequired)+" "; //build string with info required from statusDetails array
 			}
 		}
-		return returnString;
+		return returnString; //return data 
 	}
-	public static int numberOfTasks(String JSONString){ //task details, status details arrays
+	/**
+	 * January 20th, 2019 numberOfTasks: counts total number of jobs on TaskHQ server
+	 * 
+	 * @param String JSONString
+	 * @return int c
+	 * @dependencies JSONObject, JSONArray
+	 * 
+	 */
+	public static int numberOfTasks(String JSONString){ 
 		String returnString="";
 		JSONObject returnData = null;
 		JSONObject obj = new JSONObject(JSONString);
@@ -338,28 +423,32 @@ public class Task {
 		JSONArray taskDetails = values.getJSONArray("taskDetails");
 		JSONArray statusDetails=values.getJSONArray("statusDetails");
 		int c =0;
-		for(int i=0;i<taskDetails.length();i++){
+		for(int i=0;i<taskDetails.length();i++){ //loops through each item in array
 		returnData=taskDetails.getJSONObject(i);
-		//returnString +="\n"+returnData.getString(infoRequired);
-		c++;
+		
+		c++; //for every item in array, increase counter
 		}
-		return c;
+		return c; //return count
 	}
+	/**
+	 * January 20th, 2019 parseJSONDetails: parses and returns data from task details
+	 * 
+	 * @param String JSONString, String infoRequired
+	 * @return String returnString
+	 * @dependencies JSONObject, JSONArray
+	 * 
+	 */
 	public static String parseJSONDetails(String JSONString, String infoRequired){
-		String returnString="";
-		JSONObject returnData = null;
-		JSONObject obj = new JSONObject(JSONString);
-		JSONArray values= obj.getJSONArray("values");
+		String returnString=""; //holds data returned
+		JSONObject returnData = null; //holds object data read in
+		JSONObject obj = new JSONObject(JSONString); //builds json object
+		JSONArray values= obj.getJSONArray("values"); //builds array values
 		for(int i=0;i<values.length();i++){
-			returnData=values.getJSONObject(i);
-			returnString+=returnData.getString(infoRequired)+" ";
+			returnData=values.getJSONObject(i); //looks at each item in array
+			returnString+=returnData.getString(infoRequired)+" "; //builds string with data required
 		}
-		return returnString;
+		return returnString; //return data gathered
 	}
-	public static void main(String[] args) {
-		//System.out.println(parseJSON(getTaskDetails(3),"author"));
-		//System.out.println(parseJSONDetails(Task.getTaskDetails(3), ""));
-		System.out.println(parseJSON(getTasks(), 1, "pickedUp"));
-	}
+	
 
 }

@@ -1,16 +1,25 @@
+
+/**
+***********************************************
+ @Author : Akram Hannoufa
+ @Last Modified: January 20th, 2019
+ @Description: One of the base classes for TaskHQ. Bio class holds necessary info for a user's bio in TaskHQ
+  
+***********************************************
+*/
 package baseClasses;
 import java.util.ArrayList;
 
 public class Bio {
 
-	private int id;
-	private String skills ="";
-	private int completedJobs=0;
-	private int hoursWorked=0;
-	private String description="";
-	private String phoneNumber="";
+	private int id; //connected to account
+	private String skills =""; //holds user's skills
+	private int completedJobs=0; //number of jobs user has completed
+	private int hoursWorked=0;//number of hours worked by user
+	private String description="";//user's self-description
+	private String phoneNumber="";//phone number
 	
-	
+	//getters and setters
 	public Bio(int id){
 
 		this.id=id;
