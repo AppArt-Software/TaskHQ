@@ -1,5 +1,4 @@
-package UI;
-
+package finalTaskHQ;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -22,8 +21,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
 
-import baseClasses.Account;
-import baseClasses.Bio;
+
 
 public class SettingsUI {
 
@@ -175,7 +173,12 @@ public class SettingsUI {
 					JOptionPane.showMessageDialog(frame, "Skills exceeds character limit (max 150 characters)", "Skills Error",
 					        JOptionPane.WARNING_MESSAGE);
 				}
-				else{ //add update
+				else{
+					
+					//add update
+					
+				currentUser.getBio().setSkills(txtSkills.getText());
+				currentUser.updateAccount();
 				txtSkills.setText(txtSkills.getText());
 				JOptionPane.showMessageDialog(null, "Skills Saved \n"+txtSkills.getText(), "Skills", JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -231,14 +234,23 @@ public class SettingsUI {
 		
 		
 		
-		
+		JTextField txtAge = new JTextField();
+		txtAge.setFont(new Font("Comfortaa", Font.PLAIN, 13));
+		txtAge.setText(Integer.toString(currentUser.getAge()));
+		txtAge.setColumns(10);
 		JLabel lblUsernameText = new JLabel(currentUser.getUsername());//
 		lblUsernameText.setFont(new Font("Comfortaa", Font.PLAIN, 18));
 		
 		JButton btnUpdateAge = new JButton("Update Age");
 		btnUpdateAge.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-			//set details in here
+
+				currentUser.setAge(Integer.parseInt(txtAge.getText()));
+				currentUser.updateAccount();
+				
+				txtAge.setText(txtAge.getText());
+				JOptionPane.showMessageDialog(null, "Age Saved \n"+txtAge.getText(), "Age", JOptionPane.INFORMATION_MESSAGE);
+				
 			}
 		});
 		btnUpdateAge.setOpaque(true);
@@ -247,10 +259,7 @@ public class SettingsUI {
 		btnUpdateAge.setBorder(new LineBorder(Color.black,4,true));
 		btnUpdateAge.setBackground(new Color(255, 140, 0));
 		
-		JTextField txtAge = new JTextField();
-		txtAge.setFont(new Font("Comfortaa", Font.PLAIN, 13));
-		txtAge.setText(Integer.toString(currentUser.getAge()));
-		txtAge.setColumns(10);
+		
 		
 		
 		
