@@ -1,0 +1,36 @@
+1
+bigbio
+13
+balling,dribbling
+London. ON
+break some ankles
+2
+author
+10
+skills
+loc
+desc
+3
+hannakra736@gotvdsb.ca
+50
+dadaw
+67 hello street
+asdfasdf
+4
+hannakra736@gotvdsb.ca
+50
+dadaw
+67 hello street
+asdfasdf
+5
+hannakra736@gotvdsb.ca
+50
+shovel
+67 mcmichael street
+pls shovel me driveway
+6
+hannakra736@gotvdsb.ca
+50
+be good at coding
+1234 Haha Street
+tutor
