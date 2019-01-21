@@ -12,9 +12,15 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.Color;
 
+/*
+ * @author: Eric Klassen
+ * @desc: Opening UI. Gives option to create account or login.
+ * @date: 12/20/2018
+ */
+
 public class WelcomeUI {
 
-	private JFrame frame;
+	private JFrame frame;//Main frame
 
 	/**
 	 * Launch the application.
@@ -25,7 +31,7 @@ public class WelcomeUI {
 				try {
 					WelcomeUI window = new WelcomeUI();
 					window.frame.setVisible(true);
-					window.frame.setResizable(false);
+					window.frame.setResizable(false);//Not resizable
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -50,6 +56,9 @@ public class WelcomeUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		/*
+		 * Logo labels
+		 */
 		JLabel lblTask = new JLabel("Task");
 		lblTask.setFont(new Font("Comfortaa", Font.BOLD, 70));
 		lblTask.setForeground(hex2Rgb("#011A27"));
@@ -62,18 +71,19 @@ public class WelcomeUI {
 		lblHq.setBounds(356, 83, 328, 161);
 		frame.getContentPane().add(lblHq);
 		
+		//Slogan label
 		JLabel lblSlogan = new JLabel("Quick Tasks, Quick Cash!");
 		lblSlogan.setForeground(hex2Rgb("#F0810F"));
 		lblSlogan.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSlogan.setFont(new Font("Comfortaa", Font.BOLD, 20));
 		lblSlogan.setBounds(130, 197, 417, 47);
 		frame.getContentPane().add(lblSlogan);
-		
+		//Orange line
 		JPanel pLine = new JPanel();
 		pLine.setBackground(hex2Rgb("#F0810F"));
 		pLine.setBounds(130, 248, 424, 3);
 		frame.getContentPane().add(pLine);
-		
+		//Create account button
 		JButton btnCreateAccount = new JButton("Create Account");
 		btnCreateAccount.setForeground(new Color(1, 26, 39));
 		btnCreateAccount.setFont(new Font("Comfortaa", Font.BOLD, 15));
@@ -85,12 +95,12 @@ public class WelcomeUI {
 		btnCreateAccount.addActionListener(new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				//open create account UI
 				CreateAccountUI c = new CreateAccountUI();
 				c.main(null);
 			}
 		});
-		
+		//Login button
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setForeground(Color.WHITE);
 		btnLogin.setFont(new Font("Comfortaa", Font.BOLD, 15));
@@ -100,7 +110,7 @@ public class WelcomeUI {
 		btnLogin.addActionListener(new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				//Open login UI
 				LoginUI log = new LoginUI();
 				log.main(null);
 			}
