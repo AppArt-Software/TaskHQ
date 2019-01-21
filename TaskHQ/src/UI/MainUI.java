@@ -193,7 +193,7 @@ public class MainUI {
 		panel_3.add(pickshiftpanel());
 	}
 	
-	
+
 
 public JPanel selectionpanel (){		
 		JPanel panel= new JPanel();
@@ -699,6 +699,17 @@ public JPanel selectionpanel (){
 			    				 Task newTask = new Task(title, currentUser, Double.parseDouble(pay),start, end, address, description,appOrPerson, skills.toString());
 			    				
 			    				 newTask.createTask();
+			    				 
+			    					panel_3.removeAll();
+			    					panel_3.add(pickshiftpanel());
+			    					frame.validate();
+			    					frame.repaint();
+			    				 
+			    				//custom title, error icon
+	    							JOptionPane.showMessageDialog(frame,
+	    							    "Your task has been created!",
+	    							    "Task Created!",
+	    							    JOptionPane.INFORMATION_MESSAGE);
 			    				//show confirmation, add to calendar 
 			    				 
 			    			 } else {

@@ -1,4 +1,4 @@
-package finalTaskHQ;
+package UI;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -20,6 +20,9 @@ import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
+
+import baseClasses.Account;
+import baseClasses.Bio;
 
 
 

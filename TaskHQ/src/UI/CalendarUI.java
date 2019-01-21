@@ -1,24 +1,42 @@
 package UI;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop.Action;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Transparency;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Calendar;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JWindow;
+import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 
 import baseClasses.Account;
@@ -49,7 +67,7 @@ public class CalendarUI {
 	 * Create the application.
 	 */
 	public CalendarUI(Account currentUser, String[] id, String[] title, String[] employer, String[] location, String[] start, String[] end, String[] skills, String[] description,
-			String[] posted, String[] completed) {
+			String[] posted, String[] completed) throws ArrayIndexOutOfBoundsException {
 		initialize(currentUser, id, title, employer, location, start, end, skills, description, posted, completed);
 	}
 
@@ -57,7 +75,7 @@ public class CalendarUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(Account currentUser, String[] id, String[] title, String[] employer, String[] location, String[] start, 
-			String[] end, String[] skills, String[] description, String[] posted, String[] completed) {
+			String[] end, String[] skills, String[] description, String[] posted, String[] completed) throws ArrayIndexOutOfBoundsException {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -139,7 +157,7 @@ public class CalendarUI {
 		      dayPanel.add(dPanel);
 		      iterator.add(Calendar.DAY_OF_YEAR, +1);
 		      count++;
-		      
+		      try {
 		      for (int i = 0; i < id.length; i++) {
 		    	  String startDate = start[i];
 		    	  
@@ -199,17 +217,17 @@ public class CalendarUI {
 	    				    	  }
 	    				      }});
 		    		  }
+		    		  
 		    	  }
 		      }
 		      
-		    
-		    	
-		    	
-
+		      } catch(ArrayIndexOutOfBoundsException e) {
+		    	  e.printStackTrace();
+		      }
 		      
 		      reviewtask.addActionListener( new ActionListener() {public void actionPerformed(ActionEvent e) { 
 	    			dPanel.setBackground(new Color(232,232,232));
-	    			//a pop up for the review panel would be here
+	    				ReviewUI.main(null);
 				    }});
 		      
 		      dayPanel.addMouseListener(new MouseAdapter(){
@@ -230,6 +248,7 @@ public class CalendarUI {
 		    
 		    frame.setVisible(true);
 	}
+	
 	/**
 	 * @author "xhh" from https://stackoverflow.com/questions/4129666/how-to-convert-hex-to-rgb-using-java
 	 * @param colorStr e.g. "#FFFFFF"
@@ -241,4 +260,5 @@ public class CalendarUI {
 	            Integer.valueOf( colorStr.substring( 3, 5 ), 16 ),
 	            Integer.valueOf( colorStr.substring( 5, 7 ), 16 ) );
 	}
+
 }

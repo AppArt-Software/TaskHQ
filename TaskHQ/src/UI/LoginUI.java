@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 import baseClasses.Account;
+import baseClasses.CeasarCipher;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -105,7 +106,8 @@ public class LoginUI {
 				
 				String username = txtEmail.getText().toString();
 				String password = new String(txtPassword.getPassword());
-				
+				CeasarCipher cc = new CeasarCipher(password);
+				password=cc.getOutput();
 				if (username.length() != 0 && password.length() != 0) {
 					if (username.contains("@")) {
 						//to do check user info

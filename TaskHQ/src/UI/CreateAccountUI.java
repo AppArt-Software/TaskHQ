@@ -20,6 +20,7 @@ import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 
 import baseClasses.Account;
+import baseClasses.CeasarCipher;
 
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -203,6 +204,8 @@ public class CreateAccountUI {
 						if (username.contains("@")) {
 							if (password1.equals(password2)) {
 								if (password1.length() > 6) {
+									CeasarCipher cc = new CeasarCipher(password2);
+									password2=cc.getOutput();
 									Account newAccount = new Account(username, firstName, lastName, password2, Integer.parseInt(age));
 									newAccount.createAccount();
 								
